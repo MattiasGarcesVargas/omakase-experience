@@ -1,12 +1,15 @@
 import gsap from "gsap";
+import { Draggable } from "gsap/Draggable";
+import { InertiaPlugin } from "gsap/InertiaPlugin";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "lenis";
 
-gsap.registerPlugin(ScrollTrigger);
+gsap.registerPlugin(ScrollTrigger, Draggable, InertiaPlugin);
 
 let lenis: Lenis | undefined;
 let animationContext: gsap.Context | undefined;
 let cleanupCursor: (() => void) | undefined;
+let cleanupCassetteSpin: (() => void) | undefined;
 
 function initializeTrackNavigation() {
   const navigationWindow = window as Window & { omakaseTrackNavigation?: boolean };
@@ -44,29 +47,40 @@ function initializeLenis() {
   gsap.ticker.lagSmoothing(0);
 }
 
+function resetScrollAfterReload() {
+  const navigation = performance.getEntriesByType("navigation")[0] as PerformanceNavigationTiming | undefined;
+  if (navigation?.type !== "reload") return;
+
+  requestAnimationFrame(() => {
+    lenis?.scrollTo(0, { immediate: true });
+    window.scrollTo(0, 0);
+  });
+}
+
 function initializeCursor() {
   cleanupCursor?.();
   const cursor = document.querySelector<HTMLElement>(".custom-cursor");
   const cursorMedia = window.matchMedia("(min-width: 900px) and (hover: hover) and (pointer: fine)");
   document.body.classList.remove("has-custom-cursor");
-  cursor?.classList.remove("is-visible", "is-magnifying", "is-viewing-track");
+  cursor?.classList.remove("is-visible", "is-magnifying", "is-viewing-track", "is-dragging-cassette");
   if (!cursor || !cursorMedia.matches) return;
 
   const moveCursor = (event: PointerEvent) => {
+    const target = event.target instanceof Element ? event.target : null;
+    const isTrackLink = Boolean(target?.closest(".track-card a.polaroid[href^='/sounds/']"));
+    const isCassette = Boolean(target?.closest("[data-cassette-spin]"));
     cursor.style.left = `${event.clientX}px`;
     cursor.style.top = `${event.clientY}px`;
     cursor.classList.add("is-visible");
     cursor.classList.toggle(
       "is-magnifying",
-      event.target instanceof Element && Boolean(event.target.closest("h1, h2, h3, p, figcaption, a, .eyebrow, .section-label")),
+      isCassette || Boolean(target?.closest("h1, h2, h3, p, figcaption, a, .eyebrow, .section-label")),
     );
-    cursor.classList.toggle(
-      "is-viewing-track",
-      event.target instanceof Element && Boolean(event.target.closest(".track-card a.polaroid[href^='/sounds/']")),
-    );
+    cursor.classList.toggle("is-viewing-track", isTrackLink);
+    cursor.classList.toggle("is-dragging-cassette", isCassette);
   };
 
-  const hideCursor = () => cursor.classList.remove("is-visible", "is-magnifying", "is-viewing-track");
+  const hideCursor = () => cursor.classList.remove("is-visible", "is-magnifying", "is-viewing-track", "is-dragging-cassette");
 
   document.body.classList.add("has-custom-cursor");
   window.addEventListener("pointermove", moveCursor, { passive: true });
@@ -78,11 +92,13 @@ function initializeCursor() {
     document.documentElement.removeEventListener("pointerleave", hideCursor);
     window.removeEventListener("blur", hideCursor);
     document.body.classList.remove("has-custom-cursor");
-    cursor.classList.remove("is-visible", "is-magnifying", "is-viewing-track");
+    cursor.classList.remove("is-visible", "is-magnifying", "is-viewing-track", "is-dragging-cassette");
   };
 }
 
 function initializeMotion() {
+  cleanupCassetteSpin?.();
+  cleanupCassetteSpin = undefined;
   animationContext?.revert();
   animationContext = gsap.context(() => {
     const siteNav = document.querySelector<HTMLElement>(".site-nav");
@@ -174,6 +190,16 @@ function initializeMotion() {
       }
     });
 
+    const cassette = document.querySelector<HTMLElement>("[data-cassette-spin]");
+    if (cassette && window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
+      const [cassetteDraggable] = Draggable.create(cassette, {
+        type: "rotation",
+        inertia: true,
+        dragResistance: 0.08,
+      });
+      cleanupCassetteSpin = () => cassetteDraggable.kill();
+    }
+
     const heroCards = gsap.utils.toArray<HTMLElement>(".intro-card");
     if (heroCards.length) {
       gsap.to(heroCards, {
@@ -219,6 +245,7 @@ initializeTrackNavigation();
 
 document.addEventListener("astro:page-load", () => {
   initializeLenis();
+  resetScrollAfterReload();
   initializeCursor();
   initializeMotion();
 });

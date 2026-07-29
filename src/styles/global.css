@@ -61,8 +61,11 @@ a.polaroid:hover, a.polaroid:focus-visible { transform: rotate(0deg) translateY(
 .section-shell { width: min(100%, 90rem); margin-inline: auto; padding: clamp(5rem, 12vw, 11rem) clamp(1.5rem, 5vw, 5rem); }
 .about { min-height: 120svh; padding-top: clamp(8rem, 18vw, 15rem); text-align: left; }
 .about-grid { display: grid; gap: clamp(4rem, 10vw, 9rem); margin-top: 2rem; }
+.about-heading-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(14rem, 24vw); gap: clamp(2rem, 6vw, 7rem); align-items: center; }
 .display-title { font-size: clamp(4.7rem, 11.5vw, 11rem); }
 .about-heading { max-width: 16ch; }
+.about-cassette { width: min(100%, 21rem); justify-self: end; cursor: grab; touch-action: none; user-select: none; }
+.about-cassette:active { cursor: grabbing; }.about-cassette img { display: block; width: 100%; height: auto; pointer-events: none; }
 .about-copy { max-width: 78rem; padding-bottom: .5rem; }
 .about-copy .about-statement { margin: 0 0 clamp(2rem, 4vw, 4.5rem); color: var(--color-ink); font-size: clamp(1.7rem, 3.4vw, 4rem); font-weight: 600; letter-spacing: -.06em; line-height: 1.02; text-align: left; }
 .about-copy .about-statement:first-child { margin-left: auto; text-align: right; }
@@ -111,7 +114,7 @@ a.polaroid:hover, a.polaroid:focus-visible { transform: rotate(0deg) translateY(
 .custom-cursor { position: fixed; top: -100px; left: -100px; z-index: 9999; width: 40px; height: 40px; border-radius: 50%; background: #fff; pointer-events: none; opacity: 0; mix-blend-mode: difference; transform: translate(-50%, -50%) scale(1); transition: transform 180ms cubic-bezier(.22,.61,.36,1); will-change: transform; }
 .custom-cursor.is-visible { opacity: 1; }.custom-cursor.is-magnifying { transform: translate(-50%, -50%) scale(1.8); }
 .custom-cursor__label { position: absolute; inset: 0; display: grid; place-items: center; color: var(--color-void); font-family: "Modak", system-ui; font-size: 1rem; font-weight: 400; font-style: normal; line-height: .8; opacity: 0; transform: scale(.86); transition: opacity 180ms ease, transform 220ms cubic-bezier(.22,.61,.36,1); }
-.custom-cursor.is-viewing-track .custom-cursor__label { opacity: 1; transform: scale(1); }
+.custom-cursor.is-viewing-track .custom-cursor__label--view, .custom-cursor.is-dragging-cassette .custom-cursor__label--drag { opacity: 1; transform: scale(1); }
 
 @media (min-width: 900px) and (hover: hover) and (pointer: fine) {
   body.has-custom-cursor, body.has-custom-cursor * { cursor: none !important; }
@@ -120,7 +123,7 @@ a.polaroid:hover, a.polaroid:focus-visible { transform: rotate(0deg) translateY(
 @media (max-width: 850px) {
   .site-nav { padding: 1rem; }.site-mark, .site-nav nav { font-size: .55rem; }
   .hero { min-height: 48rem; }.hero::after { inset: 11% 3%; }.intro-card { width: 9.7rem; }.intro-card--album { top: 18%; left: -1rem; }.intro-card--artist { top: 12%; right: -1rem; }.intro-card--city { bottom: 14%; left: 2%; }.intro-card--plate { right: 2%; bottom: 12%; }
-  .about-grid, .soundtracks-grid, .track-hero-grid, .track-meaning { grid-template-columns: 1fr; }.about { min-height: auto; }.about-grid { gap: 2rem; }.soundtracks-grid { gap: 2.2rem; }.track-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }.track-card:nth-child(even) { margin-top: 3rem; }.track-card--3 { margin-top: 0 !important; }
+  .about-grid, .about-heading-row, .soundtracks-grid, .track-hero-grid, .track-meaning { grid-template-columns: 1fr; }.about { min-height: auto; }.about-grid { gap: 2rem; }.about-heading-row { gap: 2rem; }.about-cassette { width: min(50vw, 18rem); justify-self: start; }.soundtracks-grid { gap: 2.2rem; }.track-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }.track-card:nth-child(even) { margin-top: 3rem; }.track-card--3 { margin-top: 0 !important; }
   .track-hero { min-height: auto; }.track-hero-grid { min-height: auto; padding-top: 6rem; }.track-hero-polaroid { justify-self: start; width: min(80%, 20rem); margin-left: 11%; }.track-meaning { gap: 1.5rem; }.track-gallery { grid-template-columns: 1fr; }.gallery-item, .gallery-item:nth-child(2), .gallery-item:nth-child(3) { width: min(100%, 28rem); margin: 0; }.gallery-item:nth-child(even) { justify-self: end; }
 }
 

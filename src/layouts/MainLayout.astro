@@ -24,7 +24,10 @@ const { title, description = "Una experiencia conceptual inspirada en OMAKASE de
   <body>
     <Navbar />
     <main><slot /></main>
-    <div class="custom-cursor" aria-hidden="true"><span class="custom-cursor__label">View</span></div>
+    <div class="custom-cursor" aria-hidden="true">
+      <span class="custom-cursor__label custom-cursor__label--view">View</span>
+      <span class="custom-cursor__label custom-cursor__label--drag">Drag</span>
+    </div>
     <script>
       import "../scripts/siteMotion";
     </script>
