@@ -49,7 +49,7 @@ function initializeCursor() {
   const cursor = document.querySelector<HTMLElement>(".custom-cursor");
   const cursorMedia = window.matchMedia("(min-width: 900px) and (hover: hover) and (pointer: fine)");
   document.body.classList.remove("has-custom-cursor");
-  cursor?.classList.remove("is-visible", "is-magnifying");
+  cursor?.classList.remove("is-visible", "is-magnifying", "is-viewing-track");
   if (!cursor || !cursorMedia.matches) return;
 
   const moveCursor = (event: PointerEvent) => {
@@ -60,9 +60,13 @@ function initializeCursor() {
       "is-magnifying",
       event.target instanceof Element && Boolean(event.target.closest("h1, h2, h3, p, figcaption, a, .eyebrow, .section-label")),
     );
+    cursor.classList.toggle(
+      "is-viewing-track",
+      event.target instanceof Element && Boolean(event.target.closest(".track-card a.polaroid[href^='/sounds/']")),
+    );
   };
 
-  const hideCursor = () => cursor.classList.remove("is-visible", "is-magnifying");
+  const hideCursor = () => cursor.classList.remove("is-visible", "is-magnifying", "is-viewing-track");
 
   document.body.classList.add("has-custom-cursor");
   window.addEventListener("pointermove", moveCursor, { passive: true });
@@ -74,13 +78,28 @@ function initializeCursor() {
     document.documentElement.removeEventListener("pointerleave", hideCursor);
     window.removeEventListener("blur", hideCursor);
     document.body.classList.remove("has-custom-cursor");
-    cursor.classList.remove("is-visible", "is-magnifying");
+    cursor.classList.remove("is-visible", "is-magnifying", "is-viewing-track");
   };
 }
 
 function initializeMotion() {
   animationContext?.revert();
   animationContext = gsap.context(() => {
+    const siteNav = document.querySelector<HTMLElement>(".site-nav");
+    const soundtracks = document.querySelector<HTMLElement>(".soundtracks");
+    siteNav?.classList.remove("is-on-dark");
+    if (siteNav && soundtracks) {
+      ScrollTrigger.create({
+        trigger: soundtracks,
+        start: "top top",
+        end: "bottom top",
+        onEnter: () => siteNav.classList.add("is-on-dark"),
+        onEnterBack: () => siteNav.classList.add("is-on-dark"),
+        onLeave: () => siteNav.classList.remove("is-on-dark"),
+        onLeaveBack: () => siteNav.classList.remove("is-on-dark"),
+      });
+    }
+
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (prefersReducedMotion) return;
 
@@ -91,7 +110,7 @@ function initializeMotion() {
         .from("[data-nav]", { opacity: 0, y: -16, duration: 0.7 })
         .from(".intro-card", { y: 130, opacity: 0, scale: 0.86, rotate: 14, duration: 1.2, stagger: 0.1 }, 0.1)
         .from(".hero-title", { yPercent: 115, duration: 1.15 }, 0.45)
-        .from(".hero-kicker, .hero-intro, .hero-symbol", { opacity: 0, y: 22, duration: 0.7, stagger: 0.08 }, 0.95)
+        .from(".hero-kicker, .hero-intro", { opacity: 0, y: 22, duration: 0.7, stagger: 0.08 }, 0.95)
         .from(".scroll-indicator", { opacity: 0, y: 12, duration: 0.6 }, 1.35);
     }
 
@@ -162,6 +181,21 @@ function initializeMotion() {
         ease: "none",
         stagger: 0.04,
         scrollTrigger: { trigger: ".hero", start: "top top", end: "bottom top", scrub: 0.8 },
+      });
+    }
+
+    const scrollIndicator = document.querySelector<HTMLElement>(".scroll-indicator");
+    if (hero && scrollIndicator) {
+      gsap.fromTo(scrollIndicator, { autoAlpha: 1, y: 0 }, {
+        autoAlpha: 0,
+        y: -14,
+        ease: "none",
+        scrollTrigger: {
+          trigger: hero,
+          start: "top -8%",
+          end: "45% top",
+          scrub: 0.45,
+        },
       });
     }
 
