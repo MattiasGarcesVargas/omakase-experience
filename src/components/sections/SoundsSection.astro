@@ -1,0 +1,22 @@
+---
+import type { Track } from "../../data/tracks";
+import Polaroid from "../polaroids/Polaroid.astro";
+const { tracks } = Astro.props as { tracks: Track[] };
+---
+
+<section id="sounds" class="sounds section-shell" aria-labelledby="sounds-title">
+  <div class="sounds-heading">
+    <div class="section-label">03 / CUATRO PLATOS</div>
+    <h2 id="sounds-title" class="display-title reveal">SOUNDS.</h2>
+    <p>Cuatro platos emocionales seleccionados del menú.</p>
+  </div>
+  <div class="track-grid">
+    {tracks.map((track, index) => (
+      <article class={`track-card track-card--${index + 1}`}>
+        <div class="track-meta"><span>{track.order}</span><span>{track.phase}</span></div>
+        <Polaroid image={track.image} alt={`Imagen de ${track.title}`} label={track.placeholder} caption={track.title} href={`/sounds/${track.slug}`} transitionName={`track-${track.slug}`} />
+        <p>{track.shortDescription}</p>
+      </article>
+    ))}
+  </div>
+</section>

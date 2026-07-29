@@ -1,0 +1,14 @@
+---
+const links = [
+  { label: "Index", href: "/#index" },
+  { label: "Soundtracks", href: "/#soundtracks" },
+  { label: "Sounds", href: "/#sounds" },
+];
+---
+
+<header class="site-nav" data-nav>
+  <a class="site-mark" href="/#index">omakase@experience.studio</a>
+  <nav aria-label="Navegacion principal">
+    {links.map((link) => <a href={link.href}>{link.label}</a>)}
+  </nav>
+</header>

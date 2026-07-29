@@ -1,0 +1,190 @@
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import Lenis from "lenis";
+
+gsap.registerPlugin(ScrollTrigger);
+
+let lenis: Lenis | undefined;
+let animationContext: gsap.Context | undefined;
+let cleanupCursor: (() => void) | undefined;
+
+function initializeTrackNavigation() {
+  const navigationWindow = window as Window & { omakaseTrackNavigation?: boolean };
+  if (navigationWindow.omakaseTrackNavigation) return;
+  navigationWindow.omakaseTrackNavigation = true;
+
+  document.addEventListener("click", (event) => {
+    const trackLink = event.target instanceof Element
+      ? event.target.closest<HTMLAnchorElement>(".track-card a.polaroid[href^='/sounds/']")
+      : null;
+    if (trackLink) sessionStorage.setItem("omakase:reset-track-scroll", "true");
+  }, { capture: true });
+
+  document.addEventListener("astro:page-load", () => {
+    if (sessionStorage.getItem("omakase:reset-track-scroll") !== "true") return;
+    sessionStorage.removeItem("omakase:reset-track-scroll");
+    requestAnimationFrame(() => {
+      lenis?.scrollTo(0, { immediate: true });
+      window.scrollTo(0, 0);
+    });
+  });
+}
+
+function initializeLenis() {
+  if (lenis || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+  lenis = new Lenis({
+    duration: 1.1,
+    smoothWheel: true,
+    lerp: 0.085,
+  });
+
+  lenis.on("scroll", ScrollTrigger.update);
+  gsap.ticker.add((time) => lenis?.raf(time * 1000));
+  gsap.ticker.lagSmoothing(0);
+}
+
+function initializeCursor() {
+  cleanupCursor?.();
+  const cursor = document.querySelector<HTMLElement>(".custom-cursor");
+  const cursorMedia = window.matchMedia("(min-width: 900px) and (hover: hover) and (pointer: fine)");
+  document.body.classList.remove("has-custom-cursor");
+  cursor?.classList.remove("is-visible", "is-magnifying");
+  if (!cursor || !cursorMedia.matches) return;
+
+  const moveCursor = (event: PointerEvent) => {
+    cursor.style.left = `${event.clientX}px`;
+    cursor.style.top = `${event.clientY}px`;
+    cursor.classList.add("is-visible");
+    cursor.classList.toggle(
+      "is-magnifying",
+      event.target instanceof Element && Boolean(event.target.closest("h1, h2, h3, p, figcaption, a, .eyebrow, .section-label")),
+    );
+  };
+
+  const hideCursor = () => cursor.classList.remove("is-visible", "is-magnifying");
+
+  document.body.classList.add("has-custom-cursor");
+  window.addEventListener("pointermove", moveCursor, { passive: true });
+  document.documentElement.addEventListener("pointerleave", hideCursor);
+  window.addEventListener("blur", hideCursor);
+
+  cleanupCursor = () => {
+    window.removeEventListener("pointermove", moveCursor);
+    document.documentElement.removeEventListener("pointerleave", hideCursor);
+    window.removeEventListener("blur", hideCursor);
+    document.body.classList.remove("has-custom-cursor");
+    cursor.classList.remove("is-visible", "is-magnifying");
+  };
+}
+
+function initializeMotion() {
+  animationContext?.revert();
+  animationContext = gsap.context(() => {
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (prefersReducedMotion) return;
+
+    const hero = document.querySelector(".hero");
+    if (hero) {
+      const timeline = gsap.timeline({ defaults: { ease: "power4.out" } });
+      timeline
+        .from("[data-nav]", { opacity: 0, y: -16, duration: 0.7 })
+        .from(".intro-card", { y: 130, opacity: 0, scale: 0.86, rotate: 14, duration: 1.2, stagger: 0.1 }, 0.1)
+        .from(".hero-title", { yPercent: 115, duration: 1.15 }, 0.45)
+        .from(".hero-kicker, .hero-intro, .hero-symbol", { opacity: 0, y: 22, duration: 0.7, stagger: 0.08 }, 0.95)
+        .from(".scroll-indicator", { opacity: 0, y: 12, duration: 0.6 }, 1.35);
+    }
+
+    const story = document.querySelector<HTMLElement>(".intro-story");
+    const heroTitle = document.querySelector<HTMLElement>(".hero-title");
+    const heroTitleWrap = heroTitle?.parentElement;
+    if (story && heroTitle && heroTitleWrap && window.matchMedia("(min-width: 851px)").matches) {
+      const titleOrigin = heroTitleWrap.getBoundingClientRect();
+      const titleTimeline = gsap.timeline({
+        scrollTrigger: {
+          trigger: story,
+          start: "top top",
+          end: "bottom bottom",
+          scrub: 0.5,
+          pin: heroTitleWrap,
+          pinSpacing: false,
+          onEnter: () => heroTitleWrap.classList.add("is-pinned"),
+          onEnterBack: () => heroTitleWrap.classList.add("is-pinned"),
+          onLeaveBack: () => heroTitleWrap.classList.remove("is-pinned"),
+        },
+      });
+
+      titleTimeline
+        .to(heroTitle, {
+          scale: 0.18,
+          x: 24 - titleOrigin.left,
+          y: 76 - titleOrigin.top,
+          transformOrigin: "top left",
+          ease: "none",
+          duration: 0.35,
+        })
+        .to({}, { duration: 0.65 });
+    }
+
+    gsap.utils.toArray<HTMLElement>(".reveal").forEach((element) => {
+      gsap.from(element, {
+        y: 55,
+        opacity: 0,
+        duration: 0.95,
+        ease: "power4.out",
+        scrollTrigger: { trigger: element, start: "top 84%", once: true },
+      });
+    });
+
+    const aboutStatements = gsap.utils.toArray<HTMLElement>(".about-statement");
+    aboutStatements.forEach((statement, index) => {
+      gsap.fromTo(statement, { y: 90, opacity: 0.12 }, {
+        y: 0,
+        opacity: 1,
+        ease: "none",
+        scrollTrigger: { trigger: statement, start: "top 100%", end: "top 62%", scrub: true },
+      });
+
+      const previousStatement = aboutStatements[index - 1];
+      if (previousStatement) {
+        gsap.to(previousStatement, {
+          opacity: 0.16,
+          ease: "none",
+          scrollTrigger: { trigger: statement, start: "top 76%", end: "top 42%", scrub: true },
+        });
+      }
+    });
+
+    const heroCards = gsap.utils.toArray<HTMLElement>(".intro-card");
+    if (heroCards.length) {
+      gsap.to(heroCards, {
+        yPercent: -8,
+        ease: "none",
+        stagger: 0.04,
+        scrollTrigger: { trigger: ".hero", start: "top top", end: "bottom top", scrub: 0.8 },
+      });
+    }
+
+    const trackCards = gsap.utils.toArray<HTMLElement>(".track-card");
+    if (trackCards.length) {
+      gsap.from(trackCards, {
+        y: 60,
+        opacity: 0,
+        stagger: 0.12,
+        duration: 0.8,
+        ease: "power4.out",
+        scrollTrigger: { trigger: ".track-grid", start: "top 80%", once: true },
+      });
+    }
+  });
+
+  ScrollTrigger.refresh();
+}
+
+initializeTrackNavigation();
+
+document.addEventListener("astro:page-load", () => {
+  initializeLenis();
+  initializeCursor();
+  initializeMotion();
+});

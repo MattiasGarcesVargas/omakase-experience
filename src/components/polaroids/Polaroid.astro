@@ -1,0 +1,29 @@
+---
+type Props = {
+  label: string;
+  caption: string;
+  image?: string;
+  alt?: string;
+  className?: string;
+  transitionName?: string;
+  href?: string;
+};
+
+const { label, caption, image, alt = "", className = "", transitionName, href } = Astro.props;
+---
+
+{href ? (
+  <a class={`polaroid ${className}`} href={href} data-polaroid>
+    <span class="polaroid-image" transition:name={transitionName}>
+      {image ? <img src={image} alt={alt} loading="lazy" /> : <><span>OMAKASE ASSET</span><strong>{label}</strong></>}
+    </span>
+    <span class="polaroid-caption">{caption}</span>
+  </a>
+) : (
+  <figure class={`polaroid ${className}`} data-polaroid>
+    <div class="polaroid-image" transition:name={transitionName}>
+      {image ? <img src={image} alt={alt} loading="lazy" /> : <><span>OMAKASE ASSET</span><strong>{label}</strong></>}
+    </div>
+    <figcaption class="polaroid-caption">{caption}</figcaption>
+  </figure>
+)}

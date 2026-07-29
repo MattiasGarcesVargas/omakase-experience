@@ -1,0 +1,29 @@
+---
+import { ClientRouter } from "astro:transitions";
+import Navbar from "../components/common/Navbar.astro";
+import "../styles/global.css";
+
+type Props = { title: string; description?: string };
+const { title, description = "Una experiencia conceptual inspirada en OMAKASE de Álvaro Díaz." } = Astro.props;
+---
+
+<!doctype html>
+<html lang="es" transition:animate="none">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#e7e5e0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title}</title>
+    <ClientRouter />
+  </head>
+  <body>
+    <Navbar />
+    <main><slot /></main>
+    <div class="custom-cursor" aria-hidden="true"></div>
+    <script>
+      import "../scripts/siteMotion";
+    </script>
+  </body>
+</html>

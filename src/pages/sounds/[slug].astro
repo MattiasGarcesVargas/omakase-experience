@@ -1,0 +1,50 @@
+---
+import MainLayout from "../../layouts/MainLayout.astro";
+import Footer from "../../components/common/Footer.astro";
+import Polaroid from "../../components/polaroids/Polaroid.astro";
+import { tracks } from "../../data/tracks";
+
+export function getStaticPaths() {
+  return tracks.map((track) => ({ params: { slug: track.slug }, props: { track } }));
+}
+
+const { track } = Astro.props;
+const currentIndex = tracks.findIndex(({ slug }) => slug === track.slug);
+const nextTrack = tracks[(currentIndex + 1) % tracks.length];
+---
+
+<MainLayout title={`${track.title} - OMAKASE`} description={track.shortDescription}>
+  <article class="track-page">
+    <header class="track-hero section-shell">
+      <a class="back-link" href="/#sounds">← VOLVER A SOUNDS</a>
+      <div class="track-hero-grid">
+        <div class="track-hero-copy">
+          <p class="eyebrow">{track.order} / {track.phase}</p>
+          <h1 class="track-title">{track.title}</h1>
+          <p class="track-mood">{track.mood}</p>
+        </div>
+        <Polaroid className="track-hero-polaroid" image={track.image} alt={`Imagen de ${track.title}`} label={track.placeholder} caption={`PLATO ${track.order}`} transitionName={`track-${track.slug}`} />
+      </div>
+    </header>
+
+    <section class="track-meaning section-shell">
+      <div class="section-label">SIGNIFICADO / {track.phase}</div>
+      <p class="track-interpretation reveal">{track.interpretation}</p>
+    </section>
+
+    <section class="track-gallery section-shell" aria-label={`Galeria conceptual de ${track.title}`}>
+      {track.gallery.map((item) => (
+        <figure class="gallery-item reveal">
+          <div class="gallery-placeholder"><span>IMAGE PENDING</span><strong>{item.label}</strong></div>
+          <figcaption>{item.caption}</figcaption>
+        </figure>
+      ))}
+    </section>
+
+    <nav class="next-track section-shell" aria-label="Siguiente cancion">
+      <span>SIGUIENTE PLATO</span>
+      <a href={`/sounds/${nextTrack.slug}`}>{nextTrack.title} <span aria-hidden="true">↗</span></a>
+    </nav>
+  </article>
+  <Footer />
+</MainLayout>

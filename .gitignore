@@ -1,5 +1,9 @@
 # build output
 dist/
+
+# project documentation and local media
+docs/
+
 # generated types
 .astro/
 
