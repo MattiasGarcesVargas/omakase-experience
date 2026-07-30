@@ -62,25 +62,27 @@ function initializeCursor() {
   const cursor = document.querySelector<HTMLElement>(".custom-cursor");
   const cursorMedia = window.matchMedia("(min-width: 900px) and (hover: hover) and (pointer: fine)");
   document.body.classList.remove("has-custom-cursor");
-  cursor?.classList.remove("is-visible", "is-magnifying", "is-viewing-track", "is-dragging-cassette");
+  cursor?.classList.remove("is-visible", "is-magnifying", "is-viewing-track", "is-dragging-cassette", "is-spinning-disc");
   if (!cursor || !cursorMedia.matches) return;
 
   const moveCursor = (event: PointerEvent) => {
     const target = event.target instanceof Element ? event.target : null;
     const isTrackLink = Boolean(target?.closest(".track-card a.polaroid[href^='/sounds/']"));
-    const isCassette = Boolean(target?.closest("[data-cassette-spin]"));
+    const isCassette = Boolean(target?.closest("[data-cassette-drag]"));
+    const isExposedDisc = Boolean(target?.closest("[data-disc-spin]")?.closest(".is-disc-exposed"));
     cursor.style.left = `${event.clientX}px`;
     cursor.style.top = `${event.clientY}px`;
     cursor.classList.add("is-visible");
     cursor.classList.toggle(
       "is-magnifying",
-      isCassette || Boolean(target?.closest("h1, h2, h3, p, figcaption, a, .eyebrow, .section-label")),
+      isCassette || isExposedDisc || Boolean(target?.closest("h1, h2, h3, p, figcaption, a, .eyebrow, .section-label")),
     );
     cursor.classList.toggle("is-viewing-track", isTrackLink);
     cursor.classList.toggle("is-dragging-cassette", isCassette);
+    cursor.classList.toggle("is-spinning-disc", isExposedDisc);
   };
 
-  const hideCursor = () => cursor.classList.remove("is-visible", "is-magnifying", "is-viewing-track", "is-dragging-cassette");
+  const hideCursor = () => cursor.classList.remove("is-visible", "is-magnifying", "is-viewing-track", "is-dragging-cassette", "is-spinning-disc");
 
   document.body.classList.add("has-custom-cursor");
   window.addEventListener("pointermove", moveCursor, { passive: true });
@@ -92,7 +94,7 @@ function initializeCursor() {
     document.documentElement.removeEventListener("pointerleave", hideCursor);
     window.removeEventListener("blur", hideCursor);
     document.body.classList.remove("has-custom-cursor");
-    cursor.classList.remove("is-visible", "is-magnifying", "is-viewing-track", "is-dragging-cassette");
+    cursor.classList.remove("is-visible", "is-magnifying", "is-viewing-track", "is-dragging-cassette", "is-spinning-disc");
   };
 }
 
@@ -190,14 +192,44 @@ function initializeMotion() {
       }
     });
 
-    const cassette = document.querySelector<HTMLElement>("[data-cassette-spin]");
-    if (cassette && window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
-      const [cassetteDraggable] = Draggable.create(cassette, {
+    const media = document.querySelector<HTMLElement>("[data-about-media]");
+    const cassette = document.querySelector<HTMLElement>("[data-cassette-drag]");
+    const disc = document.querySelector<HTMLElement>("[data-disc-spin]");
+    if (media && cassette && disc && window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
+      const [discDraggable] = Draggable.create(disc, {
         type: "rotation",
         inertia: true,
         dragResistance: 0.08,
       });
-      cleanupCassetteSpin = () => cassetteDraggable.kill();
+      discDraggable.disable();
+
+      const maximumSlide = media.clientWidth * 0.55;
+      const exposurePoint = maximumSlide * 0.72;
+      let isDiscExposed = false;
+      const updateDiscAccess = (x: number) => {
+        const shouldExposeDisc = x <= -exposurePoint;
+        if (shouldExposeDisc === isDiscExposed) return;
+        isDiscExposed = shouldExposeDisc;
+        media.classList.toggle("is-disc-exposed", shouldExposeDisc);
+        if (shouldExposeDisc) discDraggable.enable();
+        else discDraggable.disable();
+      };
+
+      const [cassetteDraggable] = Draggable.create(cassette, {
+        type: "x",
+        bounds: { minX: -maximumSlide, maxX: 0 },
+        dragResistance: 0.08,
+        onDrag() {
+          updateDiscAccess(this.x);
+        },
+        onRelease() {
+          updateDiscAccess(this.x);
+        },
+      });
+      cleanupCassetteSpin = () => {
+        cassetteDraggable.kill();
+        discDraggable.kill();
+      };
     }
 
     const heroCards = gsap.utils.toArray<HTMLElement>(".intro-card");
