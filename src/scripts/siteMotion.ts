@@ -195,6 +195,7 @@ function initializeMotion() {
     const media = document.querySelector<HTMLElement>("[data-about-media]");
     const cassette = document.querySelector<HTMLElement>("[data-cassette-drag]");
     const disc = document.querySelector<HTMLElement>("[data-disc-spin]");
+    const dragHint = document.querySelector<HTMLElement>(".about-drag-hint");
     if (media && cassette && disc && window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
       const [discDraggable] = Draggable.create(disc, {
         type: "rotation",
@@ -206,6 +207,10 @@ function initializeMotion() {
       const maximumSlide = media.clientWidth * 0.55;
       const exposurePoint = maximumSlide * 0.72;
       let isDiscExposed = false;
+      const updateDragHint = (x: number) => {
+        if (!dragHint) return;
+        gsap.set(dragHint, { autoAlpha: Math.max(0, 1 + x / maximumSlide) });
+      };
       const updateDiscAccess = (x: number) => {
         const shouldExposeDisc = x <= -exposurePoint;
         if (shouldExposeDisc === isDiscExposed) return;
@@ -214,15 +219,18 @@ function initializeMotion() {
         if (shouldExposeDisc) discDraggable.enable();
         else discDraggable.disable();
       };
+      updateDragHint(0);
 
       const [cassetteDraggable] = Draggable.create(cassette, {
         type: "x",
         bounds: { minX: -maximumSlide, maxX: 0 },
         dragResistance: 0.08,
         onDrag() {
+          updateDragHint(this.x);
           updateDiscAccess(this.x);
         },
         onRelease() {
+          updateDragHint(this.x);
           updateDiscAccess(this.x);
         },
       });

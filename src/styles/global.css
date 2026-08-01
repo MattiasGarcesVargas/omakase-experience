@@ -28,7 +28,7 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .site-nav nav a { position: relative; }
 .site-nav nav a::after { position: absolute; right: 0; bottom: -0.18rem; width: 0; height: 1px; background: currentColor; content: ""; transition: width 180ms ease; }
 .site-nav nav a:hover::after, .site-nav nav a:focus-visible::after { width: 100%; }
-.hero { position: relative; display: grid; min-height: 100svh; place-items: center; overflow: hidden; padding: 7rem 1.5rem 5rem; isolation: isolate; }
+.hero { position: relative; display: grid; min-height: 100svh; place-items: center; overflow: visible; padding: 7rem 1.5rem 5rem; isolation: isolate; }
 .hero::before { position: absolute; inset: 0; z-index: -2; content: ""; background-image: radial-gradient(rgba(32, 33, 36, 0.17) 0.6px, transparent 0.6px); background-size: 6px 6px; opacity: 0.17; }
 .hero::after { position: absolute; inset: 11% 6%; z-index: -1; border: 1px solid rgba(32,33,36,.12); content: ""; transform: rotate(-1.4deg); }
 .hero-copy { position: relative; z-index: 2; width: min(100%, 85rem); text-align: center; }
@@ -53,8 +53,8 @@ a.polaroid:hover, a.polaroid:focus-visible { transform: rotate(0deg) translateY(
 .intro-card { position: absolute; }
 .intro-card--album { top: 16%; left: 8%; transform: rotate(-10deg); }
 .intro-card--artist { top: 10%; right: 10%; transform: rotate(9deg); }
-.intro-card--city { bottom: 13%; left: 13%; transform: rotate(7deg); }
-.intro-card--plate { right: 13%; bottom: 10%; transform: rotate(-7deg); }
+.intro-card--city { bottom: 18%; left: 13%; transform: rotate(7deg); }
+.intro-card--plate { right: 13%; bottom: 16%; transform: rotate(-7deg); }
 .scroll-indicator { position: absolute; bottom: 1.6rem; left: 50%; display: grid; gap: .2rem; place-items: center; font-size: .55rem; font-weight: 700; letter-spacing: .1em; transform: translateX(-50%); }
 .scroll-indicator span:last-child { font-size: 1.35rem; font-weight: 900; line-height: 1; }
 
@@ -65,14 +65,18 @@ a.polaroid:hover, a.polaroid:focus-visible { transform: rotate(0deg) translateY(
 .display-title { font-size: clamp(4.7rem, 11.5vw, 11rem); }
 .about-heading { max-width: 16ch; }
 .about-media { position: relative; width: min(100%, 21rem); aspect-ratio: 1; justify-self: end; isolation: isolate; }
+.about-drag-hint { position: absolute; z-index: 0; top: 27%; left: -80%; width: 21rem; height: auto; pointer-events: none; user-select: none; }
 .about-disc { position: absolute; z-index: 1; top: 12%; right: -3%; width: 76%; height: auto; pointer-events: none; user-select: none; }
 .about-media.is-disc-exposed .about-disc { cursor: grab; pointer-events: auto; touch-action: none; }.about-media.is-disc-exposed .about-disc:active { cursor: grabbing; }
 .about-cassette { position: absolute; inset: 0; z-index: 2; cursor: grab; touch-action: none; user-select: none; }
 .about-cassette:active { cursor: grabbing; }.about-cassette img { display: block; width: 100%; height: auto; pointer-events: none; }
-.about-copy { max-width: 78rem; padding-bottom: .5rem; }
-.about-copy .about-statement { margin: 0 0 clamp(2rem, 4vw, 4.5rem); color: var(--color-ink); font-size: clamp(1.7rem, 3.4vw, 4rem); font-weight: 600; letter-spacing: -.06em; line-height: 1.02; text-align: left; }
-.about-copy .about-statement:first-child { margin-left: auto; text-align: right; }
-.about-note { margin-top: 2.7rem; border-top: 1px solid rgba(32,33,36,.3); padding-top: .75rem; font-size: .62rem; font-weight: 700; letter-spacing: .08em; }
+.about-copy { position: relative; isolation: isolate; max-width: 78rem; padding-bottom: .5rem; }
+.about-background { position: absolute; z-index: 0; height: auto; pointer-events: none; user-select: none; opacity: .58; }
+.about-background--tentacle { top: -12%; left: 2%; width: clamp(14rem, 20vw, 23rem); }
+.about-background--bowl { right: -5%; bottom: -10%; width: clamp(16rem, 24vw, 28rem); }
+.about-copy .about-statement { position: relative; z-index: 1; margin: 0 0 clamp(2rem, 4vw, 4.5rem); color: var(--color-ink); font-size: clamp(1.7rem, 3.4vw, 4rem); font-weight: 600; letter-spacing: -.06em; line-height: 1.02; text-align: left; }
+.about-copy .about-statement:first-of-type { margin-left: auto; text-align: right; }
+.about-note { position: relative; z-index: 1; margin-top: 2.7rem; border-top: 1px solid rgba(32,33,36,.3); padding-top: .75rem; font-size: .62rem; font-weight: 700; letter-spacing: .08em; }
 
 .soundtracks { background: var(--color-void); color: var(--color-paper-light); }
 .soundtracks-grid { display: grid; gap: 3rem; grid-template-columns: .8fr 1.2fr; }
@@ -126,7 +130,7 @@ a.polaroid:hover, a.polaroid:focus-visible { transform: rotate(0deg) translateY(
 @media (max-width: 850px) {
   .site-nav { padding: 1rem; }.site-mark, .site-nav nav { font-size: .55rem; }
   .hero { min-height: 48rem; }.hero::after { inset: 11% 3%; }.intro-card { width: 9.7rem; }.intro-card--album { top: 18%; left: -1rem; }.intro-card--artist { top: 12%; right: -1rem; }.intro-card--city { bottom: 14%; left: 2%; }.intro-card--plate { right: 2%; bottom: 12%; }
-  .about-grid, .about-heading-row, .soundtracks-grid, .track-hero-grid, .track-meaning { grid-template-columns: 1fr; }.about { min-height: auto; }.about-grid { gap: 2rem; }.about-heading-row { gap: 2rem; }.about-media { width: min(50vw, 18rem); justify-self: start; }.soundtracks-grid { gap: 2.2rem; }.track-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }.track-card:nth-child(even) { margin-top: 3rem; }.track-card--3 { margin-top: 0 !important; }
+  .about-grid, .about-heading-row, .soundtracks-grid, .track-hero-grid, .track-meaning { grid-template-columns: 1fr; }.about { min-height: auto; }.about-grid { gap: 2rem; }.about-heading-row { gap: 2rem; }.about-media { width: min(50vw, 18rem); justify-self: start; }.about-drag-hint, .about-background { display: none; }.soundtracks-grid { gap: 2.2rem; }.track-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }.track-card:nth-child(even) { margin-top: 3rem; }.track-card--3 { margin-top: 0 !important; }
   .track-hero { min-height: auto; }.track-hero-grid { min-height: auto; padding-top: 6rem; }.track-hero-polaroid { justify-self: start; width: min(80%, 20rem); margin-left: 11%; }.track-meaning { gap: 1.5rem; }.track-gallery { grid-template-columns: 1fr; }.gallery-item, .gallery-item:nth-child(2), .gallery-item:nth-child(3) { width: min(100%, 28rem); margin: 0; }.gallery-item:nth-child(even) { justify-self: end; }
 }
 
