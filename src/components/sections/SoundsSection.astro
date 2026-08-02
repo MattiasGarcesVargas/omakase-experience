@@ -9,6 +9,9 @@ const { tracks } = Astro.props as { tracks: Track[] };
     <div class="section-label">03 / CUATRO PLATOS</div>
     <h2 id="sounds-title" class="display-title reveal">SOUNDS.</h2>
     <p>Cuatro platos emocionales seleccionados del menú.</p>
+    <div class="sounds-art" aria-hidden="true">
+      <img src="/images/tools/background/tentaculo_troceado_cuchillo.png" alt="" />
+    </div>
   </div>
   <div class="track-grid">
     {tracks.map((track, index) => (
