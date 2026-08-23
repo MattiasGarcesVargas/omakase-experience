@@ -1,19 +1,23 @@
+---
+import { Image } from "astro:assets";
+---
+
 <section id="about" class="about section-shell" aria-labelledby="about-title">
   <div class="section-label">01 / EL CONCEPTO</div>
-  <div class="about-grid">
+  <div>
     <div class="about-heading-row">
       <h2 id="about-title" class="display-title about-heading">THE CHEF<br />DECIDES.</h2>
       <div class="about-media" data-about-media>
-        <img class="about-drag-hint" src="/images/tools/drag_here.png" alt="" aria-hidden="true" />
-        <img class="about-disc" src="/images/polaroids/disco.png" alt="Disco de OMAKASE" draggable="false" data-disc-spin />
+        <Image class="about-drag-hint" src="/images/tools/drag_here.png" alt="" width={1628} height={966} aria-hidden="true" />
+        <Image class="about-disc" src="/images/polaroids/disco.png" alt="Disco de OMAKASE" width={1254} height={1254} draggable="false" data-disc-spin />
         <div class="about-cassette" data-cassette-drag>
-          <img src="/images/polaroids/caset.png" alt="Cassette de OMAKASE" draggable="false" />
+          <Image src="/images/polaroids/caset.png" alt="Cassette de OMAKASE" width={1254} height={1254} draggable="false" />
         </div>
       </div>
     </div>
     <div class="about-copy">
-      <img class="about-background about-background--tentacle" src="/images/tools/background/tentaculo.png" alt="" aria-hidden="true" />
-      <img class="about-background about-background--bowl" src="/images/tools/background/recipiente.png" alt="" aria-hidden="true" />
+      <Image class="about-background about-background--tentacle" src="/images/tools/background/tentaculo.png" alt="" width={1122} height={1402} aria-hidden="true" />
+      <Image class="about-background about-background--bowl" src="/images/tools/background/recipiente.png" alt="" width={1254} height={1254} aria-hidden="true" />
       <p class="about-statement">OMAKASE es una experiencia digital conceptual inspirada en el álbum de Álvaro Díaz. Cada canción se presenta como un plato dentro de un menú emocional cuidadosamente servido.</p>
       <p class="about-statement">Álvaro Díaz mezcla reggaetón alternativo, rap, melodías y una narrativa visual marcada. Aquí, el chef decide: sonidos, géneros y emociones que cambian de forma sin pedir permiso.</p>
       <div class="about-note">INGREDIENTES: PUERTO RICO / CINE / ANIME / CIUDAD / R&B / RIESGO</div>

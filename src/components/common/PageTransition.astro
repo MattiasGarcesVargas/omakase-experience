@@ -1,0 +1,9 @@
+---
+const pixelCount = 192;
+---
+
+<div class="page-transition" transition:persist="page-transition-grid" transition:animate="none" aria-hidden="true">
+  <div class="page-transition__grid">
+    {Array.from({ length: pixelCount }, () => <span class="page-transition__cell"></span>)}
+  </div>
+</div>

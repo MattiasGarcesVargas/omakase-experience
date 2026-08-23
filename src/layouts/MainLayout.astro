@@ -1,6 +1,7 @@
 ---
 import { ClientRouter } from "astro:transitions";
 import Navbar from "../components/common/Navbar.astro";
+import PageTransition from "../components/common/PageTransition.astro";
 import "../styles/global.css";
 
 type Props = { title: string; description?: string };
@@ -24,6 +25,7 @@ const { title, description = "Una experiencia conceptual inspirada en OMAKASE de
   <body>
     <Navbar />
     <main><slot /></main>
+    <PageTransition />
     <div class="custom-cursor" aria-hidden="true">
       <span class="custom-cursor__label custom-cursor__label--view">View</span>
       <span class="custom-cursor__label custom-cursor__label--drag">Drag</span>
@@ -31,6 +33,7 @@ const { title, description = "Una experiencia conceptual inspirada en OMAKASE de
     </div>
     <script>
       import "../scripts/siteMotion";
+      import "../scripts/pageTransition";
     </script>
   </body>
 </html>

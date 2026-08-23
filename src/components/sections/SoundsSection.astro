@@ -1,4 +1,5 @@
 ---
+import { Image } from "astro:assets";
 import type { Track } from "../../data/tracks";
 import Polaroid from "../polaroids/Polaroid.astro";
 const { tracks } = Astro.props as { tracks: Track[] };
@@ -10,7 +11,7 @@ const { tracks } = Astro.props as { tracks: Track[] };
     <h2 id="sounds-title" class="display-title reveal">SOUNDS.</h2>
     <p>Cuatro platos emocionales seleccionados del menú.</p>
     <div class="sounds-art" aria-hidden="true">
-      <img src="/images/tools/background/tentaculo_troceado_cuchillo.png" alt="" />
+      <Image src="/images/tools/background/tentaculo_troceado_cuchillo.png" alt="" width={2141} height={734} />
     </div>
   </div>
   <div class="track-grid">

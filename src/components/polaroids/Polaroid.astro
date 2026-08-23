@@ -1,4 +1,6 @@
 ---
+import { Image } from "astro:assets";
+
 type Props = {
   label: string;
   caption: string;
@@ -15,14 +17,14 @@ const { label, caption, image, alt = "", className = "", transitionName, href } 
 {href ? (
   <a class={`polaroid ${className}`} href={href} data-polaroid>
     <span class="polaroid-image" transition:name={transitionName}>
-      {image ? <img src={image} alt={alt} loading="lazy" /> : <><span>OMAKASE ASSET</span><strong>{label}</strong></>}
+      {image ? <Image src={image} alt={alt} width={1200} height={1296} loading="lazy" /> : <><span>OMAKASE ASSET</span><strong>{label}</strong></>}
     </span>
     <span class="polaroid-caption">{caption}</span>
   </a>
 ) : (
   <figure class={`polaroid ${className}`} data-polaroid>
     <div class="polaroid-image" transition:name={transitionName}>
-      {image ? <img src={image} alt={alt} loading="lazy" /> : <><span>OMAKASE ASSET</span><strong>{label}</strong></>}
+      {image ? <Image src={image} alt={alt} width={1200} height={1296} loading="lazy" /> : <><span>OMAKASE ASSET</span><strong>{label}</strong></>}
     </div>
     <figcaption class="polaroid-caption">{caption}</figcaption>
   </figure>

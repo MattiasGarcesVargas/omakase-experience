@@ -8,7 +8,8 @@ export type Track = {
   placeholder: string;
   shortDescription: string;
   interpretation: string;
-  gallery: { label: string; caption: string }[];
+  meaningLines?: string[];
+  gallery: { label: string; caption: string; image?: string; alt?: string }[];
 };
 
 export const tracks: Track[] = [
@@ -16,24 +17,31 @@ export const tracks: Track[] = [
     slug: "pienso-en-ti",
     title: "PIENSO EN TI.",
     order: "05 / 16",
-    phase: "EL SAZON",
-    mood: "calor / memoria / cambio de ritmo",
+    phase: "TRACK",
+    mood: "cumbia / memoria / hermandad",
     image: "/images/tracks/pienso-en-ti/PiensoEnTi.png",
     placeholder: "PIENSO EN TI IMAGE",
-    shortDescription: "Un recuerdo que vuelve en calor, movimiento y una luz que no termina de apagarse.",
+    shortDescription: "Una cumbia de Álvaro Díaz para Milkman: memoria, hermandad y un homenaje que sigue en movimiento.",
     interpretation:
-      "Una canción que cambia de forma como un recuerdo cuando vuelve de noche. La cumbia, el reggaeton y la nostalgia no compiten: se sirven juntos. Esta pieza imagina una mesa despues de la fiesta, vasos a medio terminar y el impulso de pensar en alguien aunque ya sepas que no ayuda.",
+      "PIENSO EN TI. transforma una pérdida profunda en movimiento. Álvaro Díaz recuerda a Milkman, amigo, hermano creativo y figura esencial desde sus inicios, a través de una cumbia que no busca cerrar la ausencia: la mantiene presente. El personaje que Milkman diseñó para el video lleva ese homenaje al plano visual.",
+    meaningLines: [
+      "Una cumbia para sostener una ausencia.",
+      "Álvaro Díaz recuerda a Milkman: amigo, hermano y compañero desde el comienzo.",
+      "El dolor no se queda quieto... cambia de ritmo, vuelve, acompaña.",
+      "El personaje que Milkman diseñó para el video conserva una parte de su mundo.",
+      "PIENSO EN TI, es memoria en movimiento, un homenaje que sigue presente.",
+    ],
     gallery: [
-      { label: "01", caption: "luz calida sobre una mesa" },
-      { label: "02", caption: "baile lento / memoria activa" },
-      { label: "03", caption: "un plato que cambia de sabor" },
+      { label: "01", caption: "en memoria a 'Milkman'", image: "/images/tracks/pienso-en-ti/pienso_en_ti_mov.jpg", alt: "Personaje del video de Pienso en ti junto a una mesa" },
+      { label: "02", caption: "Alvaro Diaz recuerdo", image: "/images/tracks/pienso-en-ti/alvarodiaz_pienso.jpg", alt: "Fotografia de Alvaro Diaz" },
+      { label: "03", caption: "tributo que sigue presente", image: "/images/tracks/pienso-en-ti/tributo_milk.jpeg", alt: "Personaje creado por Milkman como tributo" },
     ],
   },
   {
     slug: "en-la-misma-ciudad",
     title: "EN LA MISMA CIUDAD.",
     order: "08 / 16",
-    phase: "EL SAZON",
+    phase: "TRACK",
     mood: "ciudad / distancia / urgencia",
     image: "/images/tracks/en-la-misma-ciudad/EnLaMismaCiudad.png",
     placeholder: "CITY IMAGE",
