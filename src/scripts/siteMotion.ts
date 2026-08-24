@@ -186,6 +186,7 @@ function initializeMotion() {
     }
 
     const story = document.querySelector<HTMLElement>(".intro-story");
+    const about = document.querySelector<HTMLElement>(".about");
     const heroTitle = document.querySelector<HTMLElement>(".hero-title");
     const heroTitleWrap = heroTitle?.parentElement;
     if (story && heroTitle && heroTitleWrap && window.matchMedia("(min-width: 851px)").matches) {
@@ -193,8 +194,9 @@ function initializeMotion() {
       const titleTimeline = gsap.timeline({
         scrollTrigger: {
           trigger: story,
+          endTrigger: about ?? story,
           start: "top top",
-          end: "bottom bottom",
+          end: about ? "top top" : "bottom bottom",
           scrub: 0.5,
           pin: heroTitleWrap,
           pinSpacing: false,
@@ -208,7 +210,7 @@ function initializeMotion() {
         .to(heroTitle, {
           scale: 0.18,
           x: 24 - titleOrigin.left,
-          y: 76 - titleOrigin.top,
+          y: 50 - titleOrigin.top,
           transformOrigin: "top left",
           ease: "none",
           duration: 0.35,
