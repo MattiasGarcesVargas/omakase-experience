@@ -267,6 +267,41 @@ function initializeMotion() {
       }
     }
 
+    const cityPage = document.querySelector<HTMLElement>('[data-track-slug="en-la-misma-ciudad"]');
+    const cityMeaning = cityPage?.querySelector<HTMLElement>(".track-meaning--city");
+    const cityStage = cityPage?.querySelector<HTMLElement>(".city-meaning-stage");
+    const cityImage = cityPage?.querySelector<HTMLElement>(".city-meaning-image");
+    const cityShade = cityPage?.querySelector<HTMLElement>(".city-meaning-shade");
+    const cityLines = cityPage ? gsap.utils.toArray<HTMLElement>(cityPage.querySelectorAll(".city-meaning-lines p")) : [];
+    const cityNav = document.querySelector<HTMLElement>(".site-nav");
+    if (cityMeaning && cityStage && cityImage && cityShade && cityLines.length) {
+      const isCompactCityScene = window.matchMedia("(max-width: 850px)").matches;
+      const cityTimeline = gsap.timeline({
+        scrollTrigger: {
+          trigger: cityMeaning,
+          start: "top top",
+          end: isCompactCityScene ? "+=115%" : "+=175%",
+          scrub: 0.7,
+          pin: cityStage,
+          anticipatePin: 1,
+          onEnter: () => cityNav?.classList.add("is-on-dark"),
+          onEnterBack: () => cityNav?.classList.add("is-on-dark"),
+          onLeave: () => cityNav?.classList.remove("is-on-dark"),
+          onLeaveBack: () => cityNav?.classList.remove("is-on-dark"),
+        },
+      });
+
+      cityTimeline
+        .to(cityImage, { scale: isCompactCityScene ? 1.08 : 1.16, duration: 0.38, ease: "none" })
+        .to(cityShade, { opacity: 0.76, duration: 0.34, ease: "none" }, 0.28);
+
+      cityLines.forEach((line, index) => {
+        const position = 0.5 + (index * 0.18);
+        cityTimeline.fromTo(line, { autoAlpha: 0, y: 42 }, { autoAlpha: 1, y: 0, duration: 0.16, ease: "none" }, position);
+        if (index > 0) cityTimeline.to(cityLines[index - 1], { autoAlpha: 0.14, y: -16, duration: 0.16, ease: "none" }, position);
+      });
+    }
+
     const aboutStatements = gsap.utils.toArray<HTMLElement>(".about-statement");
     aboutStatements.forEach((statement, index) => {
       gsap.fromTo(statement, { y: 90, opacity: 0.12 }, {

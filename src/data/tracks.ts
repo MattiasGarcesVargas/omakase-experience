@@ -42,12 +42,19 @@ export const tracks: Track[] = [
     title: "EN LA MISMA CIUDAD.",
     order: "08 / 16",
     phase: "TRACK",
-    mood: "ciudad / distancia / urgencia",
+    mood: "ansiedad / distancia / ciudad vacia",
     image: "/images/tracks/en-la-misma-ciudad/EnLaMismaCiudad.png",
     placeholder: "CITY IMAGE",
-    shortDescription: "Dos personas en la misma ciudad, pero en coordenadas emocionales distintas.",
+    shortDescription: "Alvaro Diaz y Jesse Baez recorren una ciudad enorme mientras la distancia emocional vuelve todo vacio.",
     interpretation:
-      "La ciudad hace que todo parezca cercano: las mismas calles, luces y ventanas. Pero tambien puede volver imposible el encuentro. Esta pagina piensa la cancion como un recorrido nocturno entre mensajes sin enviar, reflejos rojos sobre el carro y una distancia que no se mide en kilometros.",
+      "EN LA MISMA CIUDAD. convierte la cercania fisica en una forma de ansiedad. Alvaro Diaz y Jesse Baez persiguen a alguien que sigue cerca, pero ya no responde igual. El beat acelera mientras la ciudad se llena de luces, llamadas sin contestar y gente que no logra ocupar la ausencia. Escapar de los pensamientos parece posible por un momento, pero nunca suficiente.",
+    meaningLines: [
+      "La cercania fisica tambien puede sentirse como distancia.",
+      "Siguen cerca, pero ya no responde igual.",
+      "El beat acelera entre luces y llamadas sin contestar.",
+      "La ciudad se llena de gente, pero no ocupa la ausencia.",
+      "Escapar de los pensamientos nunca es suficiente.",
+    ],
     gallery: [
       { label: "01", caption: "ventanas encendidas" },
       { label: "02", caption: "lluvia sobre el parabrisas" },

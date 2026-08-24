@@ -12,10 +12,11 @@ const { track } = Astro.props;
 const currentIndex = tracks.findIndex(({ slug }) => slug === track.slug);
 const nextTrack = tracks[(currentIndex + 1) % tracks.length];
 const isPiensoEnTi = track.slug === "pienso-en-ti";
+const isEnLaMismaCiudad = track.slug === "en-la-misma-ciudad";
 ---
 
 <MainLayout title={`${track.title} - OMAKASE`} description={track.shortDescription}>
-  <article class:list={["track-page", { "track-page--pienso-en-ti": isPiensoEnTi }]} data-track-slug={track.slug}>
+  <article class:list={["track-page", { "track-page--pienso-en-ti": isPiensoEnTi, "track-page--en-la-misma-ciudad": isEnLaMismaCiudad }]} data-track-slug={track.slug}>
     <header class="track-hero section-shell">
       <a class="back-link" href="/#sounds">← VOLVER A SOUNDS</a>
       <div class="track-hero-grid">
@@ -30,29 +31,46 @@ const isPiensoEnTi = track.slug === "pienso-en-ti";
       </div>
     </header>
 
-    <section class:list={["track-meaning", "section-shell", { "track-meaning--lyrics": isPiensoEnTi }]}>
-      {isPiensoEnTi && <img class="milkman-draw" src="/images/tracks/pienso-en-ti/milkman_draw.png" alt="" aria-hidden="true" />}
-      <div class="section-label">SIGNIFICADO / {track.phase}</div>
-      {isPiensoEnTi && track.meaningLines ? (
-        <div class="lyric-focus" aria-label={track.interpretation}>
-          {track.meaningLines.map((line) => <p class="lyric-focus__line">{line}</p>)}
+    <section class:list={isEnLaMismaCiudad ? ["track-meaning", "track-meaning--city"] : ["track-meaning", "section-shell", { "track-meaning--lyrics": isPiensoEnTi }]}>
+      {isEnLaMismaCiudad ? (
+        <div class="city-meaning-stage">
+          <img class="city-meaning-image" src="/images/textures/ny.png" alt="Vista nocturna de Nueva York" />
+          <span class="city-meaning-shade" aria-hidden="true"></span>
+          <div class="city-meaning-copy" aria-label={track.interpretation}>
+            <div class="section-label">SIGNIFICADO / {track.phase}</div>
+            <div class="city-meaning-lines">
+              {track.meaningLines?.map((line) => <p>{line}</p>)}
+            </div>
+          </div>
         </div>
-      ) : <p class="track-interpretation reveal">{track.interpretation}</p>}
+      ) : (
+        <>
+          {isPiensoEnTi && <img class="milkman-draw" src="/images/tracks/pienso-en-ti/milkman_draw.png" alt="" aria-hidden="true" />}
+          <div class="section-label">SIGNIFICADO / {track.phase}</div>
+          {isPiensoEnTi && track.meaningLines ? (
+            <div class="lyric-focus" aria-label={track.interpretation}>
+              {track.meaningLines.map((line) => <p class="lyric-focus__line">{line}</p>)}
+            </div>
+          ) : <p class="track-interpretation reveal">{track.interpretation}</p>}
+        </>
+      )}
     </section>
 
-    <section class:list={["track-gallery", "section-shell", { "track-gallery--pienso": isPiensoEnTi }]} aria-label={`Galeria conceptual de ${track.title}`}>
-      {track.gallery.map((item) => (
-        <figure class:list={["gallery-item", { "gallery-item--motion": isPiensoEnTi, "reveal": !isPiensoEnTi }]}>
-          {item.image ? (
-            <div class="gallery-polaroid">
-              <img src={item.image} alt={item.alt ?? ""} loading="lazy" />
-              <strong>{item.label}</strong>
-            </div>
-          ) : <div class="gallery-placeholder"><span>IMAGE PENDING</span><strong>{item.label}</strong></div>}
-          <figcaption>{item.caption}</figcaption>
-        </figure>
-      ))}
-    </section>
+    {!isEnLaMismaCiudad && (
+      <section class:list={["track-gallery", "section-shell", { "track-gallery--pienso": isPiensoEnTi }]} aria-label={`Galeria conceptual de ${track.title}`}>
+        {track.gallery.map((item) => (
+          <figure class:list={["gallery-item", { "gallery-item--motion": isPiensoEnTi, "reveal": !isPiensoEnTi }]}>
+            {item.image ? (
+              <div class="gallery-polaroid">
+                <img src={item.image} alt={item.alt ?? ""} loading="lazy" />
+                <strong>{item.label}</strong>
+              </div>
+            ) : <div class="gallery-placeholder"><span>IMAGE PENDING</span><strong>{item.label}</strong></div>}
+            <figcaption>{item.caption}</figcaption>
+          </figure>
+        ))}
+      </section>
+    )}
 
     <nav class="next-track section-shell" aria-label="Siguiente cancion">
       <img class="next-track-mark" src="/images/tools/%3E%7C%3C.png" alt="" aria-hidden="true" />
