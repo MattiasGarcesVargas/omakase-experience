@@ -1,0 +1,20 @@
+---
+import { tracks } from "../../data/tracks";
+---
+
+<div class="jukebox-transition" transition:persist="jukebox-transition" transition:animate="none" aria-hidden="true">
+  <div class="jukebox-transition__panel">
+    <img class="jukebox-transition__texture" src="/images/tools/logo-texture.png" alt="" />
+    <div class="jukebox-transition__copy">
+      <span class="jukebox-transition__eyebrow">OMAKASE / SELECTOR</span>
+      <ol class="jukebox-transition__queue">
+        {tracks.map((track, index) => (
+          <li class:list={["jukebox-transition__track", { "is-focused": index === 0 }]} data-queue-index={index}>
+            <span>{track.order}</span>
+            <strong>{track.title}</strong>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </div>
+</div>

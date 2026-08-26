@@ -1,6 +1,7 @@
 ---
 import { ClientRouter } from "astro:transitions";
 import Navbar from "../components/common/Navbar.astro";
+import JukeboxTransition from "../components/common/JukeboxTransition.astro";
 import PageTransition from "../components/common/PageTransition.astro";
 import "../styles/global.css";
 
@@ -18,7 +19,7 @@ const { title, description = "Una experiencia conceptual inspirada en OMAKASE de
     <link rel="icon" type="image/png" href="/images/tools/omakase_logo.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Modak&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Modak&family=Rock+Salt&display=swap" rel="stylesheet" />
     <title>{title}</title>
     <ClientRouter />
   </head>
@@ -26,6 +27,7 @@ const { title, description = "Una experiencia conceptual inspirada en OMAKASE de
     <Navbar />
     <main><slot /></main>
     <PageTransition />
+    <JukeboxTransition />
     <div class="custom-cursor" aria-hidden="true">
       <span class="custom-cursor__label custom-cursor__label--view">View</span>
       <span class="custom-cursor__label custom-cursor__label--drag">Drag</span>
