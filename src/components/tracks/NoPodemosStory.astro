@@ -1,0 +1,29 @@
+---
+import LocalImage from "../common/LocalImage.astro";
+import type { Track } from "../../data/tracks";
+
+type Props = Pick<Track, "meaningLines" | "gallery" | "phase">;
+
+const { meaningLines = [], gallery, phase } = Astro.props as Props;
+const tour = gallery[0];
+---
+
+<section class="no-amigos-story" aria-label="Significado de No podemos ser amigos">
+  <div class="no-amigos-story__stage">
+    <article class="no-amigos-note">
+      <div class="no-amigos-note__tape" aria-hidden="true"></div>
+      <div class="section-label">SIGNIFICADO / {phase}</div>
+      <p class="no-amigos-note__address">PARA LOS QUE TODAVIA SE QUIEREN:</p>
+      <div class="no-amigos-note__body">
+        {meaningLines.map((line) => <p>{line}</p>)}
+      </div>
+      <p class="no-amigos-note__signature">- NO PODEMOS SER AMIGOS.</p>
+    </article>
+
+    {tour?.image && (
+      <figure class="no-amigos-tour">
+        <LocalImage src={tour.image} alt={tour.alt ?? ""} width={tour.width ?? 1} height={tour.height ?? 1} />
+      </figure>
+    )}
+  </div>
+</section>

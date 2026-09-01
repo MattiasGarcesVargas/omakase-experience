@@ -1,0 +1,30 @@
+---
+import LocalImage from "../common/LocalImage.astro";
+import type { Track } from "../../data/tracks";
+
+type Props = Pick<Track, "meaningLines" | "gallery" | "phase">;
+
+const { meaningLines = [], gallery, phase } = Astro.props as Props;
+---
+
+<section class="inarow-story" aria-label="Significado de INAROW62">
+  <div class="inarow-story__stage">
+    <div class="inarow-story__copy">
+      <div class="section-label">SIGNIFICADO / {phase}</div>
+      <div class="inarow-story__lines">
+        {meaningLines.map((line) => <p>{line}</p>)}
+      </div>
+    </div>
+
+    <div class="inarow-story__thread" aria-hidden="true"><span></span></div>
+
+    <div class="inarow-story__images">
+      {gallery.map((item, index) => item.image && (
+        <figure class={`inarow-story__image inarow-story__image--${index + 1}`}>
+          <LocalImage src={item.image} alt={item.alt ?? ""} width={item.width ?? 1} height={item.height ?? 1} />
+        </figure>
+      ))}
+    </div>
+
+  </div>
+</section>

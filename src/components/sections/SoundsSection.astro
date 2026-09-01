@@ -18,7 +18,7 @@ const { tracks } = Astro.props as { tracks: Track[] };
     {tracks.map((track, index) => (
       <article class={`track-card track-card--${index + 1}`}>
         <div class="track-meta"><span>{track.order}</span><span>{track.phase}</span></div>
-        <Polaroid image={track.image} alt={`Imagen de ${track.title}`} label={track.placeholder} caption={track.title} href={`/sounds/${track.slug}`} transitionName={`track-${track.slug}`} />
+        <Polaroid image={track.image} imageWidth={track.imageWidth} imageHeight={track.imageHeight} alt={`Imagen de ${track.title}`} label={track.placeholder} caption={track.title} href={`/sounds/${track.slug}`} transitionName={`track-${track.slug}`} />
         <p>{track.shortDescription}</p>
       </article>
     ))}

@@ -2,14 +2,16 @@ export type Track = {
   slug: "pienso-en-ti" | "en-la-misma-ciudad" | "inarow62" | "no-podemos-ser-amigos";
   title: string;
   order: string;
-  phase: "EL SAZON" | "EL EMPLATADO";
+  phase: "TRACK" | "EL SAZON" | "EL EMPLATADO";
   mood: string;
   image: string;
+  imageWidth: number;
+  imageHeight: number;
   placeholder: string;
   shortDescription: string;
   interpretation: string;
   meaningLines?: string[];
-  gallery: { label: string; caption: string; image?: string; alt?: string }[];
+  gallery: { label: string; caption: string; image?: string; alt?: string; width?: number; height?: number }[];
 };
 
 export const tracks: Track[] = [
@@ -20,6 +22,8 @@ export const tracks: Track[] = [
     phase: "TRACK",
     mood: "cumbia / memoria / hermandad",
     image: "/images/tracks/pienso-en-ti/PiensoEnTi.png",
+    imageWidth: 1254,
+    imageHeight: 1254,
     placeholder: "PIENSO EN TI IMAGE",
     shortDescription: "Una cumbia de Álvaro Díaz para Milkman: memoria, hermandad y un homenaje que sigue en movimiento.",
     interpretation:
@@ -32,9 +36,9 @@ export const tracks: Track[] = [
       "PIENSO EN TI, es memoria en movimiento, un homenaje que sigue presente.",
     ],
     gallery: [
-      { label: "01", caption: "en memoria a 'Milkman'", image: "/images/tracks/pienso-en-ti/pienso_en_ti_mov.jpg", alt: "Personaje del video de Pienso en ti junto a una mesa" },
-      { label: "02", caption: "Alvaro Diaz recuerdo", image: "/images/tracks/pienso-en-ti/alvarodiaz_pienso.jpg", alt: "Fotografia de Alvaro Diaz" },
-      { label: "03", caption: "tributo que sigue presente", image: "/images/tracks/pienso-en-ti/tributo_milk.jpeg", alt: "Personaje creado por Milkman como tributo" },
+      { label: "01", caption: "en memoria a 'Milkman'", image: "/images/tracks/pienso-en-ti/pienso_en_ti_mov.jpg", alt: "Personaje del video de Pienso en ti junto a una mesa", width: 405, height: 720 },
+      { label: "02", caption: "Alvaro Diaz recuerdo", image: "/images/tracks/pienso-en-ti/alvarodiaz_pienso.jpg", alt: "Fotografia de Alvaro Diaz", width: 1000, height: 1000 },
+      { label: "03", caption: "tributo que sigue presente", image: "/images/tracks/pienso-en-ti/tributo_milk.jpeg", alt: "Personaje creado por Milkman como tributo", width: 417, height: 479 },
     ],
   },
   {
@@ -44,6 +48,8 @@ export const tracks: Track[] = [
     phase: "TRACK",
     mood: "ansiedad / distancia / ciudad vacia",
     image: "/images/tracks/en-la-misma-ciudad/EnLaMismaCiudad.png",
+    imageWidth: 1254,
+    imageHeight: 1254,
     placeholder: "CITY IMAGE",
     shortDescription: "Alvaro Diaz y Jesse Baez recorren una ciudad enorme mientras la distancia emocional vuelve todo vacio.",
     interpretation:
@@ -65,17 +71,26 @@ export const tracks: Track[] = [
     slug: "inarow62",
     title: "INAROW62.",
     order: "13 / 16",
-    phase: "EL EMPLATADO",
-    mood: "intimidad / promesa / aire",
+    phase: "TRACK",
+    mood: "hogar / tiempo / cercanía",
     image: "/images/tracks/inarow62/Inarow62..png",
+    imageWidth: 1254,
+    imageHeight: 1254,
     placeholder: "INAROW62 IMAGE",
     shortDescription: "Una pieza de cercania: quedarse cuando el ruido exterior pierde importancia.",
     interpretation:
       "En el emplatado, todo lo que paso antes encuentra su forma final. INAROW62. se siente como ese momento de calma despues de mucho movimiento: una habitacion en penumbra, una promesa sin necesidad de explicarse y el espacio para simplemente acompañar.",
+    meaningLines: [
+      "Llego cuando mas roto estabas.",
+      "No encontro perfeccion. Encontro a alguien intentando volver a creer.",
+      "Mientras todos se iban, decidio quedarse.",
+      "Su presencia empezo a sentirse como hogar.",
+      "No hacian falta promesas. Solo un ratito mas para volver a creer en el amor.",
+    ],
     gallery: [
-      { label: "01", caption: "una habitacion con luz baja" },
-      { label: "02", caption: "silencio compartido" },
-      { label: "03", caption: "el plato final antes de servir" },
+      { label: "01", caption: "llego y se quedo", image: "/images/tracks/inarow62/atardecer.jpeg", alt: "Dos personas compartiendo un atardecer", width: 300, height: 300 },
+      { label: "02", caption: "presencia que se vuelve hogar", image: "/images/tracks/inarow62/snopy.jpeg", alt: "Snoopy abrazado", width: 387, height: 516 },
+      { label: "03", caption: "volver a creer", image: "/images/tracks/inarow62/alvaro-album.jpg", alt: "Alvaro Diaz junto a un album", width: 735, height: 725 },
     ],
   },
   {
@@ -85,14 +100,21 @@ export const tracks: Track[] = [
     phase: "EL EMPLATADO",
     mood: "despedida / tension / espacio negativo",
     image: "/images/tracks/no-podemos-ser-amigos/NoPodemosSerAmigos.png",
+    imageWidth: 1254,
+    imageHeight: 1254,
     placeholder: "FAREWELL IMAGE",
     shortDescription: "Cuando todavia existe un vinculo, pero ya no cabe en el lugar que tenia antes.",
     interpretation:
       "Hay despedidas que no son limpias. Todavia quedan objetos, costumbres y frases que no se sabe donde poner. Esta cancion se interpreta como una mesa vacia despues de la ultima cena: elegante, fria y llena de todo lo que no se dijo.",
+    meaningLines: [
+      "Quedar como amigos es la mentira mas facil que podemos decirnos cuando todavia nos queremos.",
+      "No te canto desde el rencor. Te canto desde la claridad: llamar amistad a lo que sientes es otra forma de no soltar.",
+      "Hay personas con las que no puedes fingir normalidad. El corazon ya sabe demasiado.",
+      "A veces 'podemos ser amigos' suena maduro, pero solo confirma que ninguno sabe que hacer con todo lo que todavia siente.",
+      "No quiero recuperarte. Solo entendi que seguir cerca con otro nombre tambien seria mentirnos.",
+    ],
     gallery: [
-      { label: "01", caption: "una silla sin ocupar" },
-      { label: "02", caption: "foto doblada / mensaje final" },
-      { label: "03", caption: "lo que queda despues" },
+      { label: "01", caption: "tour", image: "/images/tracks/no-podemos-ser-amigos/tour.jpg", alt: "Alvaro Diaz sosteniendo un letrero OMAKASE durante un tour", width: 736, height: 1308 },
     ],
   },
 ];

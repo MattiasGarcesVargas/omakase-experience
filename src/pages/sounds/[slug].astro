@@ -1,7 +1,10 @@
 ---
 import MainLayout from "../../layouts/MainLayout.astro";
 import Footer from "../../components/common/Footer.astro";
+import LocalImage from "../../components/common/LocalImage.astro";
 import Polaroid from "../../components/polaroids/Polaroid.astro";
+import InarowStory from "../../components/tracks/InarowStory.astro";
+import NoPodemosStory from "../../components/tracks/NoPodemosStory.astro";
 import { tracks } from "../../data/tracks";
 
 export function getStaticPaths() {
@@ -13,30 +16,40 @@ const currentIndex = tracks.findIndex(({ slug }) => slug === track.slug);
 const nextTrack = tracks[(currentIndex + 1) % tracks.length];
 const isPiensoEnTi = track.slug === "pienso-en-ti";
 const isEnLaMismaCiudad = track.slug === "en-la-misma-ciudad";
+const isInarow62 = track.slug === "inarow62";
+const isNoPodemosSerAmigos = track.slug === "no-podemos-ser-amigos";
 ---
 
 <MainLayout title={`${track.title} - OMAKASE`} description={track.shortDescription}>
-  <article class:list={["track-page", { "track-page--pienso-en-ti": isPiensoEnTi, "track-page--en-la-misma-ciudad": isEnLaMismaCiudad }]} data-track-slug={track.slug}>
+  <article class:list={["track-page", { "track-page--pienso-en-ti": isPiensoEnTi, "track-page--en-la-misma-ciudad": isEnLaMismaCiudad, "track-page--inarow62": isInarow62, "track-page--no-podemos-ser-amigos": isNoPodemosSerAmigos }]} data-track-slug={track.slug}>
     <header class="track-hero section-shell">
       <a class="back-link" href="/#sounds">← VOLVER A SOUNDS</a>
       <div class="track-hero-grid">
         <div class="track-hero-copy">
           <p class="eyebrow">{track.order} / {track.phase}</p>
-          <h1 class="track-title">{track.title}</h1>
+          {isEnLaMismaCiudad ? (
+            <h1 class="track-title track-title--city"><span>EN LA</span><span>MISMA</span><span>CIUDAD.</span></h1>
+          ) : <h1 class="track-title">{track.title}</h1>}
           <p class="track-mood">{track.mood}</p>
           {isPiensoEnTi && <p class="track-dedication">PARA MILKMAN / MEMORIA EN MOVIMIENTO</p>}
         </div>
-        {isPiensoEnTi && <img class="track-apron" src="/images/tools/delantal.png" alt="" aria-hidden="true" />}
-        <Polaroid className="track-hero-polaroid" image={track.image} alt={`Imagen de ${track.title}`} label={track.placeholder} caption={`PLATO ${track.order}`} transitionName={`track-${track.slug}`} />
+        {isPiensoEnTi && <LocalImage class="track-apron" src="/images/tools/delantal.png" alt="" width={1224} height={1285} ariaHidden />}
+        {isEnLaMismaCiudad && <LocalImage class="city-hero-skyline" src="/images/tools/ciudad.png" alt="" width={1536} height={1024} ariaHidden />}
+        {isInarow62 && <LocalImage class="inarow-hero-croc" src="/images/tracks/inarow62/cocodrilo.png" alt="" width={1254} height={1254} ariaHidden />}
+        <Polaroid className="track-hero-polaroid" image={track.image} imageWidth={track.imageWidth} imageHeight={track.imageHeight} alt={`Imagen de ${track.title}`} label={track.placeholder} caption={`PLATO ${track.order}`} transitionName={`track-${track.slug}`} loading="eager" priority />
       </div>
     </header>
 
-    <section class:list={isEnLaMismaCiudad ? ["track-meaning", "track-meaning--city"] : ["track-meaning", "section-shell", { "track-meaning--lyrics": isPiensoEnTi }]}>
+    {isInarow62 ? (
+      <InarowStory meaningLines={track.meaningLines} gallery={track.gallery} phase={track.phase} />
+    ) : isNoPodemosSerAmigos ? (
+      <NoPodemosStory meaningLines={track.meaningLines} gallery={track.gallery} phase={track.phase} />
+    ) : <section class:list={isEnLaMismaCiudad ? ["track-meaning", "track-meaning--city"] : ["track-meaning", "section-shell", { "track-meaning--lyrics": isPiensoEnTi }]}>
       {isEnLaMismaCiudad ? (
         <div class="city-meaning-stage">
-          <img class="city-meaning-image" src="/images/textures/ny.png" alt="Vista nocturna de Nueva York" />
+          <LocalImage class="city-meaning-image" src="/images/textures/ny.png" alt="Vista nocturna de Nueva York" width={1672} height={941} />
           <span class="city-meaning-shade" aria-hidden="true"></span>
-          <div class="city-meaning-copy" aria-label={track.interpretation}>
+          <div class="city-meaning-copy">
             <div class="section-label">SIGNIFICADO / {track.phase}</div>
             <div class="city-meaning-lines">
               {track.meaningLines?.map((line) => <p>{line}</p>)}
@@ -45,24 +58,24 @@ const isEnLaMismaCiudad = track.slug === "en-la-misma-ciudad";
         </div>
       ) : (
         <>
-          {isPiensoEnTi && <img class="milkman-draw" src="/images/tracks/pienso-en-ti/milkman_draw.png" alt="" aria-hidden="true" />}
+          {isPiensoEnTi && <LocalImage class="milkman-draw" src="/images/tracks/pienso-en-ti/milkman_draw.png" alt="" width={1145} height={1373} ariaHidden />}
           <div class="section-label">SIGNIFICADO / {track.phase}</div>
           {isPiensoEnTi && track.meaningLines ? (
-            <div class="lyric-focus" aria-label={track.interpretation}>
+            <div class="lyric-focus">
               {track.meaningLines.map((line) => <p class="lyric-focus__line">{line}</p>)}
             </div>
           ) : <p class="track-interpretation reveal">{track.interpretation}</p>}
         </>
       )}
-    </section>
+    </section>}
 
-    {!isEnLaMismaCiudad && (
+    {!isEnLaMismaCiudad && !isInarow62 && !isNoPodemosSerAmigos && (
       <section class:list={["track-gallery", "section-shell", { "track-gallery--pienso": isPiensoEnTi }]} aria-label={`Galeria conceptual de ${track.title}`}>
         {track.gallery.map((item) => (
           <figure class:list={["gallery-item", { "gallery-item--motion": isPiensoEnTi, "reveal": !isPiensoEnTi }]}>
             {item.image ? (
               <div class="gallery-polaroid">
-                <img src={item.image} alt={item.alt ?? ""} loading="lazy" />
+                <LocalImage src={item.image} alt={item.alt ?? ""} width={item.width ?? 1} height={item.height ?? 1} />
                 <strong>{item.label}</strong>
               </div>
             ) : <div class="gallery-placeholder"><span>IMAGE PENDING</span><strong>{item.label}</strong></div>}
@@ -73,7 +86,7 @@ const isEnLaMismaCiudad = track.slug === "en-la-misma-ciudad";
     )}
 
     <nav class="next-track section-shell" aria-label="Siguiente cancion">
-      <img class="next-track-mark" src="/images/tools/%3E%7C%3C.png" alt="" aria-hidden="true" />
+      <LocalImage class="next-track-mark" src="/images/tools/%3E%7C%3C.png" alt="" width={1254} height={1254} ariaHidden />
       <span>SIGUIENTE PLATO</span>
       <a href={`/sounds/${nextTrack.slug}`}>{nextTrack.title} <span aria-hidden="true">↗</span></a>
     </nav>

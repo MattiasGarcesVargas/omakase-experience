@@ -1,0 +1,30 @@
+---
+import { Image } from "astro:assets";
+
+type Props = {
+  src: string;
+  alt: string;
+  width: number;
+  height: number;
+  class?: string;
+  loading?: "eager" | "lazy";
+  priority?: boolean;
+  ariaHidden?: boolean;
+  draggable?: boolean;
+};
+
+const { src, alt, width, height, class: className, loading = "lazy", priority = false, ariaHidden = false, draggable } = Astro.props;
+---
+
+<Image
+  src={src}
+  alt={alt}
+  width={width}
+  height={height}
+  class={className}
+  loading={loading}
+  fetchpriority={priority ? "high" : "auto"}
+  decoding="async"
+  aria-hidden={ariaHidden ? "true" : undefined}
+  draggable={draggable}
+/>

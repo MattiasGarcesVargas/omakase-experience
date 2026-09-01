@@ -7,15 +7,21 @@ import Lenis from "lenis";
 gsap.registerPlugin(ScrollTrigger, Draggable, InertiaPlugin);
 
 let lenis: Lenis | undefined;
+let lenisTicker: ((time: number) => void) | undefined;
 let animationContext: gsap.Context | undefined;
 let cleanupCursor: (() => void) | undefined;
 let cleanupCassetteSpin: (() => void) | undefined;
+let cleanupAboutKeyboard: (() => void) | undefined;
+let responsiveRefreshTimer: number | undefined;
 
 function cleanupAnimationMotion() {
   cleanupCassetteSpin?.();
   cleanupCassetteSpin = undefined;
+  cleanupAboutKeyboard?.();
+  cleanupAboutKeyboard = undefined;
   animationContext?.revert();
   animationContext = undefined;
+  document.querySelectorAll(".track-meaning--city, .inarow-story").forEach((element) => element.classList.remove("is-motion-ready"));
 }
 
 export function cleanupPageMotion() {
@@ -40,7 +46,7 @@ function initializeTrackNavigation() {
 
   document.addEventListener("click", (event) => {
     const trackLink = event.target instanceof Element
-      ? event.target.closest<HTMLAnchorElement>(".track-card a.polaroid[href^='/sounds/']")
+      ? event.target.closest<HTMLAnchorElement>(".track-card a.polaroid[href^='/sounds/'], .next-track a[href^='/sounds/']")
       : null;
     if (trackLink) sessionStorage.setItem("omakase:reset-track-scroll", "true");
   }, { capture: true });
@@ -65,8 +71,93 @@ function initializeLenis() {
   });
 
   lenis.on("scroll", ScrollTrigger.update);
-  gsap.ticker.add((time) => lenis?.raf(time * 1000));
+  lenisTicker = (time) => lenis?.raf(time * 1000);
+  gsap.ticker.add(lenisTicker);
   gsap.ticker.lagSmoothing(0);
+}
+
+function destroyLenis() {
+  if (lenisTicker) gsap.ticker.remove(lenisTicker);
+  lenisTicker = undefined;
+  lenis?.destroy();
+  lenis = undefined;
+}
+
+function initializeMotionPreferenceListener() {
+  const motionWindow = window as Window & { omakaseMotionPreferenceListener?: boolean };
+  if (motionWindow.omakaseMotionPreferenceListener) return;
+  motionWindow.omakaseMotionPreferenceListener = true;
+  const media = window.matchMedia("(prefers-reduced-motion: reduce)");
+  media.addEventListener("change", ({ matches }) => {
+    cleanupPageMotion();
+    if (matches) destroyLenis();
+    else initializeLenis();
+    initializeCursor();
+    initializeMotion(false);
+  });
+}
+
+function initializeResponsiveMotionListener() {
+  const motionWindow = window as Window & { omakaseResponsiveMotionListener?: boolean };
+  if (motionWindow.omakaseResponsiveMotionListener) return;
+  motionWindow.omakaseResponsiveMotionListener = true;
+  const refresh = () => {
+    window.clearTimeout(responsiveRefreshTimer);
+    responsiveRefreshTimer = window.setTimeout(() => {
+      initializeCursor();
+      initializeMotion(false);
+    }, 160);
+  };
+  window.addEventListener("resize", refresh, { passive: true });
+  window.addEventListener("orientationchange", refresh, { passive: true });
+  document.fonts?.ready.then(() => ScrollTrigger.refresh());
+}
+
+function initializeAboutKeyboardControls() {
+  const media = document.querySelector<HTMLElement>("[data-about-media]");
+  const cassette = document.querySelector<HTMLElement>("[data-cassette-drag]");
+  const disc = document.querySelector<HTMLElement>("[data-disc-spin]");
+  if (!media || !cassette || !disc) return;
+
+  const setCassetteExposure = (isExposed: boolean) => {
+    const x = isExposed ? -(media.clientWidth * 0.55) : 0;
+    cassette.setAttribute("aria-expanded", String(isExposed));
+    media.classList.toggle("is-disc-exposed", isExposed);
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) gsap.set(cassette, { x });
+    else gsap.to(cassette, { x, duration: 0.35, ease: "power3.out" });
+  };
+  const rotateDisc = (direction: 1 | -1) => {
+    const rotation = direction < 0 ? "-=45" : "+=45";
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) gsap.set(disc, { rotation });
+    else gsap.to(disc, { rotation, duration: 0.3, ease: "power3.out" });
+  };
+  const onKeydown = (event: KeyboardEvent) => {
+    const isCassette = event.target === cassette;
+    const isDisc = event.target === disc && media.classList.contains("is-disc-exposed");
+    if (isCassette && (event.key === "ArrowLeft" || event.key === "ArrowRight")) {
+      event.preventDefault();
+      setCassetteExposure(event.key === "ArrowLeft");
+    }
+    if (isDisc && (event.key === "ArrowLeft" || event.key === "ArrowRight")) {
+      event.preventDefault();
+      rotateDisc(event.key === "ArrowLeft" ? -1 : 1);
+    }
+  };
+  const onClick = (event: MouseEvent) => {
+    if (window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+    if (event.target === cassette || (event.target instanceof Element && event.target.closest("[data-cassette-drag]"))) {
+      setCassetteExposure(!media.classList.contains("is-disc-exposed"));
+    } else if (event.target === disc && media.classList.contains("is-disc-exposed")) {
+      rotateDisc(1);
+    }
+  };
+
+  document.addEventListener("keydown", onKeydown);
+  document.addEventListener("click", onClick);
+  cleanupAboutKeyboard = () => {
+    document.removeEventListener("keydown", onKeydown);
+    document.removeEventListener("click", onClick);
+  };
 }
 
 function resetScrollAfterReload() {
@@ -153,7 +244,7 @@ function initializeCursor() {
   };
 }
 
-function initializeMotion() {
+function initializeMotion(playEntrances = true) {
   cleanupAnimationMotion();
   animationContext = gsap.context(() => {
     const siteNav = document.querySelector<HTMLElement>(".site-nav");
@@ -171,11 +262,25 @@ function initializeMotion() {
       });
     }
 
+    initializeAboutKeyboardControls();
+
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const cityState = document.querySelector<HTMLElement>(".track-meaning--city");
+    if (prefersReducedMotion && siteNav && cityState) {
+      ScrollTrigger.create({
+        trigger: cityState,
+        start: "top 12%",
+        end: "bottom 12%",
+        onEnter: () => siteNav.classList.add("is-on-dark"),
+        onEnterBack: () => siteNav.classList.add("is-on-dark"),
+        onLeave: () => siteNav.classList.remove("is-on-dark"),
+        onLeaveBack: () => siteNav.classList.remove("is-on-dark"),
+      });
+    }
     if (prefersReducedMotion) return;
 
     const hero = document.querySelector(".hero");
-    if (hero) {
+    if (hero && playEntrances) {
       const timeline = gsap.timeline({ defaults: { ease: "power4.out" } });
       timeline
         .from("[data-nav]", { opacity: 0, y: -16, duration: 0.7 })
@@ -218,7 +323,7 @@ function initializeMotion() {
         .to({}, { duration: 0.65 });
     }
 
-    gsap.utils.toArray<HTMLElement>(".reveal").forEach((element) => {
+    if (playEntrances) gsap.utils.toArray<HTMLElement>(".reveal").forEach((element) => {
       gsap.from(element, {
         y: 55,
         opacity: 0,
@@ -232,7 +337,7 @@ function initializeMotion() {
     if (piensoPage) {
       const heroCopy = piensoPage.querySelector<HTMLElement>(".track-hero-copy");
       const heroPolaroid = piensoPage.querySelector<HTMLElement>(".track-hero-polaroid");
-      if (heroCopy && heroPolaroid) {
+      if (heroCopy && heroPolaroid && playEntrances) {
         gsap.timeline({ defaults: { ease: "power4.out" } })
           .from(heroCopy.children, { y: 38, opacity: 0, duration: 0.9, stagger: 0.08 })
           .from(heroPolaroid, { y: 80, rotate: 12, opacity: 0, scale: 0.92, duration: 1.15 }, 0.18);
@@ -255,15 +360,22 @@ function initializeMotion() {
       const gallery = piensoPage.querySelector<HTMLElement>(".track-gallery--pienso");
       const galleryItems = gsap.utils.toArray<HTMLElement>(piensoPage.querySelectorAll(".gallery-item--motion"));
       if (gallery && galleryItems.length === 3) {
-        const offset = window.matchMedia("(min-width: 851px)").matches ? 250 : 90;
+        const isDesktopGallery = window.matchMedia("(min-width: 851px)").matches;
+        const offset = isDesktopGallery ? 250 : 40;
         gsap.timeline({
           scrollTrigger: { trigger: gallery, start: "top 78%", end: "bottom 22%", scrub: true },
         })
-          .fromTo(galleryItems, { opacity: 0.18 }, { opacity: 1, duration: 0.35, stagger: 0.03, ease: "none" }, 0)
-          .fromTo([galleryItems[0], galleryItems[2]], { y: offset }, { y: 0, duration: 0.5, ease: "none" }, 0)
-          .fromTo(galleryItems[1], { y: -offset }, { y: 0, duration: 0.5, ease: "none" }, 0)
-          .to([galleryItems[0], galleryItems[2]], { y: -offset, duration: 0.5, ease: "none" })
-          .to(galleryItems[1], { y: offset, duration: 0.5, ease: "none" }, "<");
+          .fromTo(galleryItems, { opacity: 0.18 }, { opacity: 1, duration: 0.35, stagger: 0.03, ease: "none" }, 0);
+        if (isDesktopGallery) {
+          gsap.timeline({ scrollTrigger: { trigger: gallery, start: "top 78%", end: "bottom 22%", scrub: true } })
+            .fromTo([galleryItems[0], galleryItems[2]], { y: offset }, { y: 0, duration: 0.5, ease: "none" }, 0)
+            .fromTo(galleryItems[1], { y: -offset }, { y: 0, duration: 0.5, ease: "none" }, 0)
+            .to([galleryItems[0], galleryItems[2]], { y: -offset, duration: 0.5, ease: "none" })
+            .to(galleryItems[1], { y: offset, duration: 0.5, ease: "none" }, "<");
+        } else {
+          gsap.timeline({ scrollTrigger: { trigger: gallery, start: "top 78%", end: "bottom 22%", scrub: true } })
+            .fromTo(galleryItems, { y: offset }, { y: -offset, duration: 1, ease: "none", stagger: 0.04 });
+        }
       }
     }
 
@@ -275,6 +387,7 @@ function initializeMotion() {
     const cityLines = cityPage ? gsap.utils.toArray<HTMLElement>(cityPage.querySelectorAll(".city-meaning-lines p")) : [];
     const cityNav = document.querySelector<HTMLElement>(".site-nav");
     if (cityMeaning && cityStage && cityImage && cityShade && cityLines.length) {
+      cityMeaning.classList.add("is-motion-ready");
       const isCompactCityScene = window.matchMedia("(max-width: 850px)").matches;
       const cityTimeline = gsap.timeline({
         scrollTrigger: {
@@ -300,6 +413,89 @@ function initializeMotion() {
         cityTimeline.fromTo(line, { autoAlpha: 0, y: 42 }, { autoAlpha: 1, y: 0, duration: 0.16, ease: "none" }, position);
         if (index > 0) cityTimeline.to(cityLines[index - 1], { autoAlpha: 0.14, y: -16, duration: 0.16, ease: "none" }, position);
       });
+    }
+
+    const inarowPage = document.querySelector<HTMLElement>('[data-track-slug="inarow62"]');
+    const inarowStory = inarowPage?.querySelector<HTMLElement>(".inarow-story");
+    const inarowLines = inarowPage ? gsap.utils.toArray<HTMLElement>(inarowPage.querySelectorAll(".inarow-story__lines p")) : [];
+    const inarowImages = inarowPage ? gsap.utils.toArray<HTMLElement>(inarowPage.querySelectorAll(".inarow-story__image")) : [];
+    const inarowThread = inarowPage?.querySelector<HTMLElement>(".inarow-story__thread");
+    const inarowCroc = inarowPage?.querySelector<HTMLElement>(".inarow-hero-croc");
+    if (inarowPage && inarowCroc && playEntrances) {
+      gsap.from(inarowCroc, { autoAlpha: 0, scale: 0.82, rotate: -18, duration: 1.15, ease: "power4.out" });
+    }
+    if (inarowStory && inarowThread && inarowLines.length === 5) {
+      inarowLines.forEach((line, index) => {
+        gsap.to(line, {
+          color: "#2a2020",
+          opacity: 1,
+          ease: "none",
+          scrollTrigger: { trigger: line, start: "top 76%", end: "top 48%", scrub: true },
+        });
+        const previousLine = inarowLines[index - 1];
+        if (previousLine) {
+          gsap.to(previousLine, {
+            color: "rgba(42,32,32,.28)",
+            opacity: 0.28,
+            ease: "none",
+            scrollTrigger: { trigger: line, start: "top 70%", end: "top 42%", scrub: true },
+          });
+        }
+      });
+
+      if (inarowImages.length) {
+        gsap.timeline({
+          scrollTrigger: { trigger: inarowStory, start: "top 74%", end: "bottom 30%", scrub: 0.75 },
+        })
+          .fromTo(inarowThread, { scaleY: 0 }, { scaleY: 1, duration: 1, ease: "none" }, 0)
+          .fromTo(inarowImages[2], { xPercent: -24, yPercent: 14, rotation: -5, opacity: 0.32 }, { xPercent: 0, yPercent: 0, rotation: -2, opacity: 1, duration: 0.42, ease: "none" }, 0.12)
+          .fromTo(inarowImages[1], { xPercent: 28, yPercent: 12, rotation: 5, opacity: 0.3 }, { xPercent: 0, yPercent: 0, rotation: 3, opacity: 1, duration: 0.42, ease: "none" }, 0.36)
+          .fromTo(inarowImages[0], { xPercent: -30, yPercent: 10, rotation: -5, opacity: 0.28 }, { xPercent: 0, yPercent: 0, rotation: -2, opacity: 1, duration: 0.42, ease: "none" }, 0.58);
+      }
+    }
+
+    const noAmigosPage = document.querySelector<HTMLElement>('[data-track-slug="no-podemos-ser-amigos"]');
+    const noAmigosStory = noAmigosPage?.querySelector<HTMLElement>(".no-amigos-story");
+    const noAmigosStage = noAmigosPage?.querySelector<HTMLElement>(".no-amigos-story__stage");
+    const noAmigosNote = noAmigosPage?.querySelector<HTMLElement>(".no-amigos-note");
+    const noAmigosTour = noAmigosPage?.querySelector<HTMLElement>(".no-amigos-tour");
+    const noAmigosLines = noAmigosPage ? gsap.utils.toArray<HTMLElement>(noAmigosPage.querySelectorAll(".no-amigos-note__body p")) : [];
+    const noAmigosSignature = noAmigosPage?.querySelector<HTMLElement>(".no-amigos-note__signature");
+    if (noAmigosStory && noAmigosStage && noAmigosNote && noAmigosTour && noAmigosSignature && noAmigosLines.length === 5) {
+      if (window.matchMedia("(min-width: 851px)").matches) {
+        gsap.timeline({
+          scrollTrigger: {
+            trigger: noAmigosStory,
+            start: "top top",
+            end: "+=145%",
+            scrub: 0.65,
+            pin: noAmigosStage,
+            anticipatePin: 1,
+          },
+        })
+          .from(noAmigosNote, { autoAlpha: 0, y: 90, rotation: -4, duration: 0.22, ease: "none" }, 0)
+          .from(noAmigosTour, { autoAlpha: 0, x: 100, rotation: 11, duration: 0.2, ease: "none" }, 0.12)
+          .from(noAmigosLines, { autoAlpha: 0, y: 22, duration: 0.1, stagger: 0.08, ease: "none" }, 0.32)
+          .from(noAmigosSignature, { autoAlpha: 0, x: -18, duration: 0.12, ease: "none" }, 0.78)
+          .to(noAmigosTour, { yPercent: -5, rotation: 1.5, duration: 0.45, ease: "none" }, 0.4);
+      } else {
+        gsap.from(noAmigosNote, {
+          autoAlpha: 0,
+          y: 48,
+          rotation: -3,
+          duration: 0.9,
+          ease: "power4.out",
+          scrollTrigger: { trigger: noAmigosNote, start: "top 82%", once: true },
+        });
+        gsap.from(noAmigosTour, {
+          autoAlpha: 0,
+          y: 48,
+          rotation: 8,
+          duration: 0.9,
+          ease: "power4.out",
+          scrollTrigger: { trigger: noAmigosTour, start: "top 84%", once: true },
+        });
+      }
     }
 
     const aboutStatements = gsap.utils.toArray<HTMLElement>(".about-statement");
@@ -345,6 +541,7 @@ function initializeMotion() {
         if (shouldExposeDisc === isDiscExposed) return;
         isDiscExposed = shouldExposeDisc;
         media.classList.toggle("is-disc-exposed", shouldExposeDisc);
+        cassette.setAttribute("aria-expanded", String(shouldExposeDisc));
         if (shouldExposeDisc) discDraggable.enable();
         else discDraggable.disable();
       };
@@ -395,7 +592,7 @@ function initializeMotion() {
     }
 
     const trackCards = gsap.utils.toArray<HTMLElement>(".track-card");
-    if (trackCards.length) {
+    if (trackCards.length && playEntrances) {
       gsap.from(trackCards, {
         y: 60,
         opacity: 0,
@@ -411,10 +608,16 @@ function initializeMotion() {
 }
 
 initializeTrackNavigation();
+initializeMotionPreferenceListener();
+initializeResponsiveMotionListener();
 
 document.addEventListener("astro:page-load", () => {
   initializeLenis();
   resetScrollAfterReload();
   initializeCursor();
-  initializeMotion();
+  initializeMotion(document.documentElement.dataset.routeTransition !== "true");
+});
+
+window.addEventListener("omakase:transition-complete", () => {
+  initializeMotion(true);
 });

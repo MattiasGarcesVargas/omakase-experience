@@ -16,6 +16,11 @@ type ActiveTransition = { id: number; signal: AbortSignal; kind: TransitionKind;
 let activeTransition: ActiveTransition | undefined;
 let transitionId = 0;
 
+function completeRouteTransition() {
+  delete document.documentElement.dataset.routeTransition;
+  window.dispatchEvent(new Event("omakase:transition-complete"));
+}
+
 function getOverlay() {
   return document.querySelector<HTMLElement>(".page-transition");
 }
@@ -77,7 +82,7 @@ function animateGrid(covered: boolean, id: number) {
 
   overlay.classList.add("is-active");
   gsap.killTweensOf(cells);
-  gsap.set(cells, { scale: covered ? 0 : 1 });
+  gsap.set(cells, { scale: covered ? 0 : 1.02 });
 
   return new Promise<void>((resolve) => {
     const complete = () => {
@@ -86,10 +91,10 @@ function animateGrid(covered: boolean, id: number) {
       resolve();
     };
     gsap.to(cells, {
-      scale: covered ? 1 : 0,
-      duration: covered ? 0.23 : 0.22,
+      scale: covered ? 1.02 : 0,
+      duration: covered ? 0.24 : 0.22,
       ease: covered ? "power1.in" : "power2.out",
-      stagger: { each: covered ? 0.011 : 0.008, from: "random" },
+      stagger: { amount: covered ? 0.42 : 0.36, from: "random" },
       onComplete: complete,
       onInterrupt: resolve,
     });
@@ -136,6 +141,7 @@ document.addEventListener("astro:before-preparation", (rawEvent) => {
   const id = ++transitionId;
   const kind: TransitionKind = jukeboxRoute ? "jukebox" : "grid";
   activeTransition = { id, signal: event.signal, kind, jukeboxRoute };
+  document.documentElement.dataset.routeTransition = "true";
   stopSmoothScroll();
 
   event.signal.addEventListener("abort", () => {
@@ -144,6 +150,7 @@ document.addEventListener("astro:before-preparation", (rawEvent) => {
     if (kind === "jukebox") setJukeboxIdle();
     else setIdle();
     resumeSmoothScroll();
+    completeRouteTransition();
   }, { once: true });
 
   const loadPage = event.loader;
@@ -156,6 +163,7 @@ document.addEventListener("astro:before-preparation", (rawEvent) => {
         if (kind === "jukebox") setJukeboxIdle();
         else setIdle();
         resumeSmoothScroll();
+        completeRouteTransition();
       }
       throw error;
     }
@@ -177,6 +185,7 @@ document.addEventListener("astro:page-load", () => {
       if (activeTransition?.id !== transition.id) return;
       activeTransition = undefined;
       resumeSmoothScroll();
+      completeRouteTransition();
     });
   });
 });

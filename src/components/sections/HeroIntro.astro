@@ -5,10 +5,10 @@ import ScrollIndicator from "../common/ScrollIndicator.astro";
 
 <section id="index" class="hero" aria-labelledby="hero-title">
   <div class="hero-polaroids" aria-hidden="true">
-    <Polaroid className="intro-card intro-card--album" image="/images/album/Omakase.png" alt="Portada del album OMAKASE" label="IMAGE PENDING" caption="01 / OMAKASE" />
-    <Polaroid className="intro-card intro-card--artist" image="/images/artist/AlvaroDiaz.jpg" alt="Alvaro Diaz vestido de chef" label="ARTIST PHOTO" caption="02 / ALVARO" />
-    <Polaroid className="intro-card intro-card--city" image="/images/polaroids/PortadaOmakase.jpeg" alt="Anuncio de OMAKASE" label="CITY RIDE" caption="03 / OMAKASE 2026" />
-    <Polaroid className="intro-card intro-card--plate" image="/images/polaroids/concert.jpg" alt="Cassette y disco de OMAKASE" label="CHEF MENU" caption="04 / TRUST THE CHEF" />
+    <Polaroid className="intro-card intro-card--album" image="/images/album/Omakase.png" imageWidth={1024} imageHeight={536} alt="Portada del album OMAKASE" label="IMAGE PENDING" caption="01 / OMAKASE" loading="eager" priority />
+    <Polaroid className="intro-card intro-card--artist" image="/images/artist/AlvaroDiaz.jpg" imageWidth={1440} imageHeight={1080} alt="Alvaro Diaz vestido de chef" label="ARTIST PHOTO" caption="02 / ALVARO" loading="eager" priority />
+    <Polaroid className="intro-card intro-card--city" image="/images/polaroids/PortadaOmakase.jpeg" imageWidth={387} imageHeight={516} alt="Anuncio de OMAKASE" label="CITY RIDE" caption="03 / OMAKASE 2026" loading="eager" priority />
+    <Polaroid className="intro-card intro-card--plate" image="/images/polaroids/concert.jpg" imageWidth={735} imageHeight={490} alt="Cassette y disco de OMAKASE" label="CHEF MENU" caption="04 / TRUST THE CHEF" loading="eager" priority />
   </div>
   <div class="hero-copy">
     <p class="eyebrow hero-kicker">UN MENU EMOCIONAL / ALVARO DIAZ / 2026</p>

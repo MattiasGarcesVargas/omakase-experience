@@ -1,30 +1,34 @@
 ---
-import { Image } from "astro:assets";
+import LocalImage from "../common/LocalImage.astro";
 
 type Props = {
   label: string;
   caption: string;
   image?: string;
+  imageWidth?: number;
+  imageHeight?: number;
   alt?: string;
   className?: string;
   transitionName?: string;
   href?: string;
+  loading?: "eager" | "lazy";
+  priority?: boolean;
 };
 
-const { label, caption, image, alt = "", className = "", transitionName, href } = Astro.props;
+const { label, caption, image, imageWidth, imageHeight, alt = "", className = "", transitionName, href, loading, priority } = Astro.props;
 ---
 
 {href ? (
   <a class={`polaroid ${className}`} href={href} data-polaroid>
     <span class="polaroid-image" transition:name={transitionName}>
-      {image ? <Image src={image} alt={alt} width={1200} height={1296} loading="lazy" /> : <><span>OMAKASE ASSET</span><strong>{label}</strong></>}
+      {image && imageWidth && imageHeight ? <LocalImage src={image} alt={alt} width={imageWidth} height={imageHeight} loading={loading} priority={priority} /> : <><span>OMAKASE ASSET</span><strong>{label}</strong></>}
     </span>
     <span class="polaroid-caption">{caption}</span>
   </a>
 ) : (
   <figure class={`polaroid ${className}`} data-polaroid>
     <div class="polaroid-image" transition:name={transitionName}>
-      {image ? <Image src={image} alt={alt} width={1200} height={1296} loading="lazy" /> : <><span>OMAKASE ASSET</span><strong>{label}</strong></>}
+      {image && imageWidth && imageHeight ? <LocalImage src={image} alt={alt} width={imageWidth} height={imageHeight} loading={loading} priority={priority} /> : <><span>OMAKASE ASSET</span><strong>{label}</strong></>}
     </div>
     <figcaption class="polaroid-caption">{caption}</figcaption>
   </figure>

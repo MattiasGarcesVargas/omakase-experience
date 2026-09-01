@@ -1,10 +1,11 @@
 ---
 import { tracks } from "../../data/tracks";
+import LocalImage from "./LocalImage.astro";
 ---
 
 <div class="jukebox-transition" transition:persist="jukebox-transition" transition:animate="none" aria-hidden="true">
   <div class="jukebox-transition__panel">
-    <img class="jukebox-transition__texture" src="/images/tools/logo-texture.png" alt="" />
+    <LocalImage class="jukebox-transition__texture" src="/images/tools/logo-texture.png" alt="" width={1312} height={1199} />
     <div class="jukebox-transition__copy">
       <span class="jukebox-transition__eyebrow">OMAKASE / SELECTOR</span>
       <ol class="jukebox-transition__queue">

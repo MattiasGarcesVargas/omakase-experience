@@ -8,9 +8,10 @@ import { Image } from "astro:assets";
     <div class="about-heading-row">
       <h2 id="about-title" class="display-title about-heading">THE CHEF<br />DECIDES.</h2>
       <div class="about-media" data-about-media>
+        <p id="about-interaction-help" class="sr-only">Usa la flecha izquierda para mover el cassette y revelar el disco. Cuando el disco este visible, usa las flechas izquierda y derecha para girarlo.</p>
         <Image class="about-drag-hint" src="/images/tools/drag_here.png" alt="" width={1628} height={966} aria-hidden="true" />
-        <Image class="about-disc" src="/images/polaroids/disco.png" alt="Disco de OMAKASE" width={1254} height={1254} draggable="false" data-disc-spin />
-        <div class="about-cassette" data-cassette-drag>
+        <Image class="about-disc" src="/images/polaroids/disco.png" alt="Disco de OMAKASE" width={1254} height={1254} draggable="false" data-disc-spin tabindex="0" role="button" aria-describedby="about-interaction-help" />
+        <div class="about-cassette" data-cassette-drag tabindex="0" role="button" aria-describedby="about-interaction-help" aria-label="Mueve el cassette para revelar el disco" aria-expanded="false">
           <Image src="/images/polaroids/caset.png" alt="Cassette de OMAKASE" width={1254} height={1254} draggable="false" />
         </div>
       </div>

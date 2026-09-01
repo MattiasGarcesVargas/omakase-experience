@@ -25,7 +25,8 @@ const { title, description = "Una experiencia conceptual inspirada en OMAKASE de
   </head>
   <body>
     <Navbar />
-    <main><slot /></main>
+    <a class="skip-link" href="#main-content">SALTAR AL CONTENIDO</a>
+    <main id="main-content"><slot /></main>
     <PageTransition />
     <JukeboxTransition />
     <div class="custom-cursor" aria-hidden="true">
