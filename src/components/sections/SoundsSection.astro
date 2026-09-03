@@ -9,7 +9,7 @@ const { tracks } = Astro.props as { tracks: Track[] };
   <div class="sounds-heading">
     <div class="section-label">03 / CUATRO PLATOS</div>
     <h2 id="sounds-title" class="display-title reveal">SOUNDS.</h2>
-    <p>Cuatro platos emocionales seleccionados del menú.</p>
+    <p>CUATRO PLATOS EMOCIONALES SELECCIONADOS DEL MENÚ.</p>
     <div class="sounds-art" aria-hidden="true">
       <Image src="/images/tools/background/tentaculo_troceado_cuchillo.png" alt="" width={2141} height={734} />
     </div>
@@ -17,7 +17,6 @@ const { tracks } = Astro.props as { tracks: Track[] };
   <div class="track-grid">
     {tracks.map((track, index) => (
       <article class={`track-card track-card--${index + 1}`}>
-        <div class="track-meta"><span>{track.order}</span><span>{track.phase}</span></div>
         <Polaroid image={track.image} imageWidth={track.imageWidth} imageHeight={track.imageHeight} alt={`Imagen de ${track.title}`} label={track.placeholder} caption={track.title} href={`/sounds/${track.slug}`} transitionName={`track-${track.slug}`} />
         <p>{track.shortDescription}</p>
       </article>
