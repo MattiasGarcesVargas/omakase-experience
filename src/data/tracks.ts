@@ -111,10 +111,10 @@ export const tracks: Track[] = [
     interpretation:
       "Hay despedidas que no son limpias. Todavia quedan objetos, costumbres y frases que no se sabe donde poner. Esta cancion se interpreta como una mesa vacia despues de la ultima cena: elegante, fria y llena de todo lo que no se dijo.",
     meaningLines: [
-      "Quedar como amigos es la mentira mas facil que podemos decirnos cuando todavia nos queremos.",
-      "No te canto desde el rencor. Te canto desde la claridad: llamar amistad a lo que sientes es otra forma de no soltar.",
-      "Hay personas con las que no puedes fingir normalidad. El corazon ya sabe demasiado.",
-      "A veces 'podemos ser amigos' suena maduro, pero solo confirma que ninguno sabe que hacer con todo lo que todavia siente.",
+      "Quedar como amigos es la mentira más fácil que podemos decirnos cuando todavia nos queremos.",
+      "No te canto desde el rencor. Te canto desde la claridad, llamar amistad a lo que sientes es otra forma de no soltar.",
+      "Existen personas con las que no puedes fingir normalidad. El corazón ya sabe demasiado.",
+      "A veces 'podemos ser amigos' suena maduro, pero solo confirma que ninguno sabe que hacer con todo lo que todavía siente.",
       "No quiero recuperarte. Solo entendi que seguir cerca con otro nombre tambien seria mentirnos.",
     ],
     gallery: [
