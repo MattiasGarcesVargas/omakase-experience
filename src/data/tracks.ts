@@ -2,7 +2,7 @@ export type Track = {
   slug: "pienso-en-ti" | "en-la-misma-ciudad" | "inarow62" | "no-podemos-ser-amigos";
   title: string;
   order: string;
-  phase: "TRACK" | "EL SAZON" | "EL EMPLATADO";
+  phase: "TRACK";
   mood: string;
   image: string;
   imageWidth: number;
@@ -101,7 +101,7 @@ export const tracks: Track[] = [
     slug: "no-podemos-ser-amigos",
     title: "NO PODEMOS SER AMIGOS",
     order: "14 / 16",
-    phase: "EL EMPLATADO",
+    phase: "TRACK",
     mood: "despedida / espacio / tiempo",
     image: "/images/tracks/no-podemos-ser-amigos/NoPodemosSerAmigos.png",
     imageWidth: 1254,
