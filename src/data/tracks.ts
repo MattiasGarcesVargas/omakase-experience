@@ -112,10 +112,10 @@ export const tracks: Track[] = [
       "Hay despedidas que no son limpias. Todavia quedan objetos, costumbres y frases que no se sabe donde poner. Esta cancion se interpreta como una mesa vacia despues de la ultima cena: elegante, fria y llena de todo lo que no se dijo.",
     meaningLines: [
       "Quedar como amigos es la mentira más fácil que podemos decirnos cuando todavia nos queremos.",
-      "No te canto desde el rencor. Te canto desde la claridad, llamar amistad a lo que sientes es otra forma de no soltar.",
-      "Existen personas con las que no puedes fingir normalidad. El corazón ya sabe demasiado.",
+      "No te canto desde el rencor. Te canto desde la claridad, llamar amistad a lo que sientes es otra forma de no soltar. Existen personas con las que no puedes fingir normalidad, el corazón ya sabe demasiado.",
       "A veces 'podemos ser amigos' suena maduro, pero solo confirma que ninguno sabe que hacer con todo lo que todavía siente.",
-      "No quiero recuperarte. Solo entendi que seguir cerca con otro nombre tambien seria mentirnos.",
+      // "No quiero apresurarme, solo quiero que las cosas funcionen, ir paso a paso, viviendo momentos contigo y construyendo un futuro juntos.",
+      "No se que nos deparara el destino, pero se que no podria ser solo tu amigo."
     ],
     gallery: [
       { label: "01", caption: "tour", image: "/images/tracks/no-podemos-ser-amigos/tour.jpg", alt: "Alvaro Diaz sosteniendo un letrero OMAKASE durante un tour", width: 736, height: 1308 },

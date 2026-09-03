@@ -214,6 +214,14 @@ a.polaroid:hover, a.polaroid:focus-visible { transform: rotate(0deg) translateY(
   font-size: clamp(.78rem, 1.12vw, 1.05rem);
   line-height: var(--note-row);
 }
+.no-amigos-note__epilogue {
+  display: block;
+  width: clamp(5.6rem, 8.5vw, 8.2rem);
+  height: auto;
+  margin: calc(var(--note-row) * -.08) 0 calc(var(--note-row) * -.86);
+  opacity: .58;
+  transform: translateY(.18rem) rotate(-3deg);
+}
 .no-amigos-note__signature {
   margin-top: calc(var(--note-row) * .72);
 }
@@ -255,6 +263,10 @@ a.polaroid:hover, a.polaroid:focus-visible { transform: rotate(0deg) translateY(
   .no-amigos-note__body p {
     font-size: clamp(.7rem, 3vw, .86rem);
     line-height: var(--note-row);
+  }
+
+  .no-amigos-note__epilogue {
+    width: clamp(4.6rem, 25vw, 6.2rem);
   }
 }
 .custom-cursor { position: fixed; top: -100px; left: -100px; z-index: 9999; width: 40px; height: 40px; border-radius: 50%; background: #fff; pointer-events: none; opacity: 0; mix-blend-mode: difference; transform: translate(-50%, -50%) scale(1); transition: transform 180ms cubic-bezier(.22,.61,.36,1); will-change: transform; }

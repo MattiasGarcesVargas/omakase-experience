@@ -6,6 +6,8 @@ type Props = Pick<Track, "meaningLines" | "gallery" | "phase">;
 
 const { meaningLines = [], gallery, phase } = Astro.props as Props;
 const tour = gallery[0];
+const epilogueLine = meaningLines.at(-1);
+const storyLines = meaningLines.slice(0, -1);
 ---
 
 <section class="no-amigos-story" aria-label="Significado de No podemos ser amigos">
@@ -15,10 +17,16 @@ const tour = gallery[0];
       <div class="section-label">SIGNIFICADO / {phase}</div>
       <p class="no-amigos-note__address">PARA LOS QUE TODAVIA SE QUIEREN:</p>
       <div class="no-amigos-note__body">
-        {meaningLines.map((line) => <p>{line}</p>)}
+        {storyLines.map((line) => <p>{line}</p>)}
+        {epilogueLine && (
+          <>
+            <LocalImage class="no-amigos-note__epilogue" src="/images/textures/epilogo-tachado-negro-transparente.png" alt="" width={2079} height={756} ariaHidden />
+            <p>{epilogueLine}</p>
+          </>
+        )}
       </div>
       <p class="no-amigos-note__signature">- NO PODEMOS SER AMIGOS</p>
-      <p class="no-amigos-note__initials">m.g. </p>
+      <p class="no-amigos-note__initials">m.g.</p>
     </article>
 
     {tour?.image && (
