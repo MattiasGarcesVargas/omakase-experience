@@ -145,6 +145,10 @@ function initializeAboutKeyboardControls() {
   };
   const onClick = (event: MouseEvent) => {
     if (window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+    if (media.dataset.aboutDragged === "true") {
+      delete media.dataset.aboutDragged;
+      return;
+    }
     if (event.target === cassette || (event.target instanceof Element && event.target.closest("[data-cassette-drag]"))) {
       setCassetteExposure(!media.classList.contains("is-disc-exposed"));
     } else if (event.target === disc && media.classList.contains("is-disc-exposed")) {
@@ -395,7 +399,7 @@ function initializeMotion(playEntrances = true) {
           start: "top top",
           end: isCompactCityScene ? "+=115%" : "+=175%",
           scrub: 0.7,
-          pin: cityStage,
+            pin: isCompactCityScene ? cityMeaning : cityStage,
           anticipatePin: 1,
           onEnter: () => cityNav?.classList.add("is-on-dark"),
           onEnterBack: () => cityNav?.classList.add("is-on-dark"),
@@ -443,7 +447,7 @@ function initializeMotion(playEntrances = true) {
         }
       });
 
-      if (inarowImages.length) {
+      if (inarowImages.length && window.matchMedia("(min-width: 851px)").matches) {
         gsap.timeline({
           scrollTrigger: { trigger: inarowStory, start: "top 74%", end: "bottom 30%", scrub: 0.75 },
         })
@@ -521,7 +525,7 @@ function initializeMotion(playEntrances = true) {
     const cassette = document.querySelector<HTMLElement>("[data-cassette-drag]");
     const disc = document.querySelector<HTMLElement>("[data-disc-spin]");
     const dragHint = document.querySelector<HTMLElement>(".about-drag-hint");
-    if (media && cassette && disc && window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
+    if (media && cassette && disc) {
       const [discDraggable] = Draggable.create(disc, {
         type: "rotation",
         inertia: true,
@@ -551,6 +555,9 @@ function initializeMotion(playEntrances = true) {
         type: "x",
         bounds: { minX: -maximumSlide, maxX: 0 },
         dragResistance: 0.08,
+        onDragStart() {
+          media.dataset.aboutDragged = "true";
+        },
         onDrag() {
           updateDragHint(this.x);
           updateDiscAccess(this.x);

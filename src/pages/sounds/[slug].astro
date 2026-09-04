@@ -34,10 +34,14 @@ const isNoPodemosSerAmigos = track.slug === "no-podemos-ser-amigos";
           {isPiensoEnTi && <p class="track-dedication">PARA MILKMAN / MEMORIA EN MOVIMIENTO</p>}
         </div>
         {isPiensoEnTi && <LocalImage class="track-apron" src="/images/tools/delantal.png" alt="" width={1224} height={1285} ariaHidden />}
-        {isEnLaMismaCiudad && <LocalImage class="city-hero-skyline" src="/images/tools/ciudad.png" alt="" width={1536} height={1024} ariaHidden />}
         {isInarow62 && <LocalImage class="inarow-hero-croc" src="/images/tracks/inarow62/cocodrilo.png" alt="" width={1254} height={1254} ariaHidden />}
         {isNoPodemosSerAmigos && <LocalImage class="no-amigos-hero-friends" src="/images/tracks/no-podemos-ser-amigos/friends.png" alt="" width={1358} height={1159} ariaHidden />}
-        <Polaroid className="track-hero-polaroid" image={track.image} imageWidth={track.imageWidth} imageHeight={track.imageHeight} alt={`Imagen de ${track.title}`} label={track.placeholder} caption={`PLATO ${track.order}`} transitionName={`track-${track.slug}`} loading="eager" priority />
+        {isEnLaMismaCiudad ? (
+          <div class="city-hero-composition">
+            <LocalImage class="city-hero-skyline" src="/images/tools/ciudad.png" alt="" width={1536} height={1024} ariaHidden />
+            <Polaroid className="track-hero-polaroid" image={track.image} imageWidth={track.imageWidth} imageHeight={track.imageHeight} alt={`Imagen de ${track.title}`} label={track.placeholder} caption={`PLATO ${track.order}`} transitionName={`track-${track.slug}`} loading="eager" priority />
+          </div>
+        ) : <Polaroid className="track-hero-polaroid" image={track.image} imageWidth={track.imageWidth} imageHeight={track.imageHeight} alt={`Imagen de ${track.title}`} label={track.placeholder} caption={`PLATO ${track.order}`} transitionName={`track-${track.slug}`} loading="eager" priority />}
       </div>
     </header>
 

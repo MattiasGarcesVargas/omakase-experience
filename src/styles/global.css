@@ -366,3 +366,51 @@ body { overflow-x: clip; }
 .jukebox-transition__track strong { font-family: var(--font-title); font-size: .86em; font-weight: 400; letter-spacing: -.035em; line-height: 1.16; }.jukebox-transition__track.is-focused { font-size: clamp(4rem, 7.6vw, 8.6rem); }.jukebox-transition__track.is-focused strong { font-size: .78em; letter-spacing: -.04em; line-height: 1.1; }
 @media (max-width: 850px) { .jukebox-transition__track.is-focused { font-size: clamp(2.7rem, 12vw, 5.5rem); }.jukebox-transition__track.is-focused strong { line-height: 1.2; } }
 @media (max-width: 390px) { .jukebox-transition__track.is-focused { font-size: clamp(2.25rem, 11vw, 3.65rem); } }
+
+/* Mobile scene corrections: keep the physical layouts legible without changing desktop art direction. */
+.city-hero-composition { display: contents; }
+@media (max-width: 850px) {
+  .intro-card--plate { display: block; right: -.7rem; bottom: 9%; }
+
+  .site-footer { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); min-height: 6.5rem; gap: .35rem; align-items: center; padding-block: 1.1rem; }
+  .footer-credit { grid-column: 1; grid-row: 1; min-width: 0; font-size: clamp(.36rem, 1.6vw, .48rem); line-height: 1.35; }
+  .footer-mark { position: static; grid-column: 2; grid-row: 1; width: clamp(3.2rem, 14vw, 4.5rem); transform: none; justify-self: center; }
+  .footer-signature { grid-column: 3; grid-row: 1; width: clamp(4.1rem, 18vw, 5.5rem); justify-self: end; }
+
+  .track-page--pienso-en-ti .track-apron { top: clamp(3.8rem, 12vw, 5.5rem); right: -.35rem; left: auto; width: min(8.5rem, 30vw); opacity: .26; transform: rotate(-14deg); }
+  .soundtracks-chef-hat { top: 2.25rem; right: 0; left: auto; width: min(8.5rem, 36vw); opacity: .2; transform: rotate(7deg); }
+
+  .about-drag-hint { display: block; top: 16%; left: 72%; width: min(10rem, 42vw); }
+  .about-cassette { touch-action: pan-y; }
+  .about-media.is-disc-exposed .about-disc { touch-action: none; }
+
+  .track-meaning--city { width: 100vw; margin-inline: calc(50% - 50vw); overflow: hidden; }
+  .city-meaning-stage { width: 100vw; max-width: none; }
+  .city-meaning-image { inset: -1px; width: calc(100% + 2px); max-width: none; height: calc(100% + 2px); }
+
+  .city-hero-composition { position: relative; display: block; width: min(82%, 22rem); justify-self: center; padding-top: 3.6rem; }
+  .city-hero-composition .track-hero-polaroid { position: relative; z-index: 1; width: 100%; margin: 0; }
+  .city-hero-composition .city-hero-skyline { display: block; top: 0; right: 50%; width: min(15rem, 68vw); opacity: .28; transform: translateX(50%) scale(1.12); transform-origin: center bottom; }
+
+  .inarow-story__stage { grid-template-columns: 1fr; min-height: 0; gap: 3rem; padding: 5rem 1.2rem; }
+  .inarow-story__copy { gap: 2rem; }
+  .inarow-story__lines p { width: 100%; max-width: none; font-size: clamp(1.55rem, 7vw, 2.25rem); }
+  .inarow-story__thread { display: none; }
+  .inarow-story__images { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.25rem; width: 100%; }
+  .inarow-story__image, .inarow-story__image:nth-child(2), .inarow-story__image:nth-child(3) { position: static; width: 100%; margin: 0; justify-self: stretch; transform: none !important; opacity: 1 !important; }
+  .inarow-story__image img { width: 100%; }
+
+  .track-page--pienso-en-ti .track-meaning--lyrics .milkman-draw { top: 50%; left: 50%; width: min(18rem, 72vw); opacity: .14; transform: translate(-50%, -50%); }
+}
+@media (max-width: 520px) {
+  .intro-card--plate { display: block; right: -.65rem; bottom: 10%; }
+  .site-footer { margin-inline: 1.2rem; }
+}
+@media (max-width: 390px) {
+  .intro-card--plate { display: block; width: 6.65rem; right: -.65rem; bottom: 9%; }
+  .inarow-story__images { grid-template-columns: 1fr; }
+}
+@media (max-height: 650px) and (max-width: 850px) {
+  .intro-card--plate { display: block; width: 6.25rem; right: -.55rem; bottom: 8%; }
+  .city-hero-composition .city-hero-skyline { display: block; width: min(11rem, 46vw); }
+}
